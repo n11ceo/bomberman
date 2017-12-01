@@ -64,6 +64,23 @@ ext.libraries = [
         jol_samples: "org.openjdk.jol:jol-samples:$jolVersion"
 ]
 
+subprojects {
+    checkstyle {
+        ignoreFailures = false
+        toolVersion = '7.5'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled false
+            html.destination "$rootProject.buildDir/report/${project.name}.html"
+            html.stylesheet resources.text.fromFile(rootProject.file('config/checkstyle/checkstyle-custom.xsl'))
+        }
+    }
+
+}
+
 jacocoTestReport {
     additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)

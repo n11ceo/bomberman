@@ -18,6 +18,10 @@ configurations {
 	compile.exclude group:'ch.qos.logback'
 }
 
+springBoot {
+	mainClass = 'bomber.matchmaker.MatchMakerApplication.java'
+}
+
 
 sourceSets {
 	main {
