@@ -1,5 +1,6 @@
 package bomber.matchmaker;
 
+import bomber.matchmaker.WebSocketClient.*;
 import bomber.matchmaker.controller.MmController;
 import org.junit.Assert;
 import org.junit.Test;
@@ -70,8 +71,7 @@ public class JoinMockTest {
         WebSocketClient client4 = new WebSocketClient("Адольф_Виссарионович","42");
         client4.startClient();
 
-        sleep();
-
+        wait(20000);
 
         Assert.assertNull(MmController.getGameId());
     }
