@@ -1,6 +1,5 @@
 package bomber.matchmaker.connection;
 
-
 public class Connection {
 
     private final long playerId;

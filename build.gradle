@@ -19,7 +19,7 @@ ext {
 
 
 allprojects {
-    group = "bomeber"
+    group = "bomberman"
     version = "1.0-SNAPSHOT"
 
     apply plugin: 'java'

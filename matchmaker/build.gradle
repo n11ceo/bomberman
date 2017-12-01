@@ -19,7 +19,7 @@ configurations {
 }
 
 springBoot {
-	mainClass = 'bomber.matchmaker.MatchMakerApplication.java'
+	mainClass = 'bomberman.bomber.matchmaker.MatchMakerApplication'
 }
 
 
