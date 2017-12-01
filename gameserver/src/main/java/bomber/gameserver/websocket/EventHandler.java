@@ -4,17 +4,25 @@ import bomber.gameserver.controller.GameController;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 
 @Component
-public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
+public class EventHandler extends TextWebSocketHandler {
+
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
+    List<WebSocketSession> peers = new ArrayList<>();
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -24,7 +32,8 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         log.info("Prolonging WS connection for 60 SEC for player #" + GameController.getConnectedPlayerCount());
         sleep(TimeUnit.SECONDS.toMillis(300));
         log.info("Closing connection for player #" + "asd");
-        session.close();
+        peers.add(session);
+        //session.close(); попробовать тест когда подключения не закрываются
     }
 
     @Override
@@ -32,6 +41,16 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         GameController.setConnectedPlayerCount(GameController.getConnectedPlayerCount() - 1);
         log.info("Socket Closed: [" + closeStatus.getCode() + "] " + closeStatus.getReason());
         super.afterConnectionClosed(session, closeStatus);
+        peers.remove(session);
     }
+
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws InterruptedException, IOException {
+
+        for(WebSocketSession webSocketSession : peers) {
+
+            webSocketSession.sendMessage(message);
+        }
+    }
+
 
 }
