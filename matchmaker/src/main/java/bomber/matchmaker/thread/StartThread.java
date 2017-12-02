@@ -34,8 +34,6 @@ public class StartThread extends Thread {
 
     @Override
     public void run() {
-
-
         int tryCounter = 0;
         int playersConnected = 0;
         while (tryCounter <= MAX_TIMEOUTS + 1
