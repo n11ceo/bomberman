@@ -4,4 +4,4 @@ rootProject.name = 'bomber'
 
 include 'matchmaker'
 include 'gameserver'
-
+include 'gameservice'
