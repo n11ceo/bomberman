@@ -28,6 +28,7 @@ public class StartThread extends Thread {
         super("StartThread_gameId=" + gameId);
         suspendFlag = false;
         this.gameId = gameId;
+        this.bomberService = bomberService;
         isStarted = false;
         this.bomberService = bomberService;
     }
@@ -47,6 +48,7 @@ public class StartThread extends Thread {
                     log.info("Sending a request to start the game with {} out of {} players in it, gameID = {}",
                             playersConnected, MAX_PLAYER_IN_GAME , gameId);
                     MmRequests.start(this.gameId);
+
                     isStarted = true;
                 } else {
                     if (tryCounter == MAX_TIMEOUTS + 1)
