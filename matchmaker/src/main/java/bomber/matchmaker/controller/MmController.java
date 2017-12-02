@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MmController {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(MmController.class);
     private static Integer gameId = null;
-    private static AtomicLong idGenerator = new AtomicLong();
+    private static AtomicInteger idGenerator = new AtomicInteger();
     public static final int MAX_PLAYER_IN_GAME = 4;
 
     @Autowired

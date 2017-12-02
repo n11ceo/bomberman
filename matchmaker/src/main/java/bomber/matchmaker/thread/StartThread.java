@@ -28,6 +28,7 @@ public class StartThread extends Thread {
         super("StartThread_gameId=" + gameId);
         suspendFlag = false;
         this.gameId = gameId;
+        this.bomberService = bomberService;
         isStarted = false;
     }
 
@@ -46,7 +47,7 @@ public class StartThread extends Thread {
                 && !isStarted) {
             try {
                 if (Integer.parseInt(MmRequests.checkStatus().body().string()) == MAX_PLAYER_IN_GAME) {
-                    bomberService.addTodb(gameId, ConnectionQueue.getInstance(), new Date());
+                    /*bomberService.addToDb(gameId, new Date());*/
                     log.info("Sending a request to start the game, gameID = {}", gameId);
                     MmRequests.start(this.gameId.toString());
                     isStarted = true;
