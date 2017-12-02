@@ -31,17 +31,17 @@ public class BomberService {
     @Transactional
     public void addToDb(@NotNull Integer gameId, @NotNull Date date) {
         queue =  ConnectionQueue.getInstance();
-        User user = new User();
         GameSession gameSession = new GameSession(gameId, date);
         gameSession.setGameId(gameId);
         gameSession.setDate(date);
         gameSessionDao.save(gameSession);
+        User user = new User();
         for (Connection connection : queue) {
             user.setGameSession(gameSessionDao.getByGameId(gameId));
             user.setId(connection.getPlayerId());
             user.setName(connection.getName());
+            userDao.save(user);
         }
-        userDao.save(user);
         log.info("Added a new line to table called gs : {}", gameSession);
         log.info("Added a new line to table called user: {}", user);
     }
