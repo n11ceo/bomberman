@@ -43,7 +43,7 @@ public class StartThread extends Thread {
                 if (playersConnected == MAX_PLAYER_IN_GAME) {
                     bomberService.addToDb(gameId, new Date());
                     log.info("Sending a request to start the game with {} out of {} players in it, gameID = {}",
-                            playersConnected, MAX_PLAYER_IN_GAME , gameId);
+                            playersConnected, MAX_PLAYER_IN_GAME, gameId);
                     MmRequests.start(this.gameId);
 
                     isStarted = true;
@@ -65,11 +65,10 @@ public class StartThread extends Thread {
         if (!isStarted) {
             if (playersConnected == 0 || playersConnected == 1) {
                 log.info("failed to start the game");
-            }
-            else {
+            } else {
                 bomberService.addToDb(gameId, new Date());
                 log.info("Sending a request to start the game with {} out of {} players in it, gameID = {}",
-                        playersConnected, MAX_PLAYER_IN_GAME , gameId);
+                        playersConnected, MAX_PLAYER_IN_GAME, gameId);
                 try {
                     MmRequests.start(this.gameId);
                 } catch (IOException e) {

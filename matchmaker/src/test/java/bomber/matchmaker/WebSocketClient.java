@@ -1,4 +1,5 @@
-package bomber.matchmaker;
+/*package bomber.matchmaker;
+
 
 import bomber.gameserver.websocket.EventHandler;
 import org.slf4j.LoggerFactory;
@@ -26,4 +27,4 @@ public class WebSocketClient {
             log.info("failed to do a handshake");
         }
     }
-}
+}*/

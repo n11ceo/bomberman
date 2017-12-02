@@ -1,7 +1,6 @@
 package bomber.gameserver.websocket;
 
 import org.slf4j.LoggerFactory;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
@@ -10,10 +9,10 @@ public class WebSocketClient {
     private static final String name = "c";
 
     public static void main(String[] args) {
-        WebSocketTestConnection();
+        webSocketTestConnection();
     }
 
-    public static void WebSocketTestConnection() {
+    public static void webSocketTestConnection() {
         // connection url
         String uri = "ws://localhost:8090/game/connect?gameId=" + 42 + "&name=" + name;
 
