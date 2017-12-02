@@ -24,7 +24,7 @@ public class MmRequests {
         return client.newCall(request).execute();
     }
 
-    public static Response start(final String gameId) throws IOException {
+    public static Response start(final int gameId) throws IOException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         Request request = new Request.Builder()
                 .post(RequestBody.create(mediaType, "gameId={" + gameId + "}"))

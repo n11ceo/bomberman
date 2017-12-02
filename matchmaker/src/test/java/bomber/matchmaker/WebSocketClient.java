@@ -1,7 +1,7 @@
-package bomber.gameserver.websocket;
+package bomber.matchmaker;
 
+import bomber.gameserver.websocket.EventHandler;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
