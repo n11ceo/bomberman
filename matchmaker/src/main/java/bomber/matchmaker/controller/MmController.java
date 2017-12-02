@@ -68,4 +68,8 @@ public class MmController {
         gameId = null;
         ConnectionQueue.getInstance().clear();
     }
+
+    public static Integer getGameId() {
+        return gameId;
+    }
 }
