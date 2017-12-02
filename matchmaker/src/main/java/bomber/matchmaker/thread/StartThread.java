@@ -1,7 +1,6 @@
 package bomber.matchmaker.thread;
 
 
-import bomber.matchmaker.connection.ConnectionQueue;
 import bomber.matchmaker.controller.MmController;
 import bomber.matchmaker.request.MmRequests;
 import bomber.matchmaker.service.BomberService;
@@ -30,7 +29,7 @@ public class StartThread extends Thread {
         this.gameId = gameId;
         this.bomberService = bomberService;
         isStarted = false;
-        this.bomberService = bomberService;
+
     }
 
     @Override
@@ -44,7 +43,7 @@ public class StartThread extends Thread {
             try {
                 playersConnected = Integer.parseInt(MmRequests.checkStatus().body().string());
                 if (playersConnected == MAX_PLAYER_IN_GAME) {
-                    bomberService.addTodb(gameId, ConnectionQueue.getInstance(), new Date());
+                    bomberService.addToDb(gameId, new Date());
                     log.info("Sending a request to start the game with {} out of {} players in it, gameID = {}",
                             playersConnected, MAX_PLAYER_IN_GAME , gameId);
                     MmRequests.start(this.gameId);
@@ -70,7 +69,7 @@ public class StartThread extends Thread {
                 log.info("failed to start the game");
             }
             else {
-                bomberService.addTodb(gameId, ConnectionQueue.getInstance(), new Date());
+                bomberService.addToDb(gameId, new Date());
                 log.info("Sending a request to start the game with {} out of {} players in it, gameID = {}",
                         playersConnected, MAX_PLAYER_IN_GAME , gameId);
                 try {

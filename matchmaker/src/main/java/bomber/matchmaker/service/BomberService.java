@@ -4,10 +4,8 @@ package bomber.matchmaker.service;
 import bomber.matchmaker.connection.Connection;
 import bomber.matchmaker.connection.ConnectionQueue;
 import bomber.matchmaker.dao.GameSessionDao;
-/*import bomber.matchmaker.dao.UserDao;*/
 import bomber.matchmaker.dao.UserDao;
 import bomber.matchmaker.model.GameSession;
-/*import bomber.matchmaker.model.User;*/
 import bomber.matchmaker.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
