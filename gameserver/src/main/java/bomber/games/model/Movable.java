@@ -2,7 +2,6 @@ package bomber.games.model;
 
 
 import bomber.games.geometry.Point;
-import geometry.Point;
 
 /**
  * GameObject that can move during game
