@@ -1,4 +1,5 @@
-package geometry;
+package bomber.games.geometry;
+
 
 //TODO insert your implementation of geometry here
 public final class Point implements Collider {

@@ -1,4 +1,4 @@
-package model;
+package bomber.games.model;
 
 /**
  * Any entity of game mechanics

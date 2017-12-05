@@ -1,8 +1,8 @@
-package block;
+package bomber.games.gameobject;
 
-import geometry.Point;
-import model.GameSession;
-import model.Positionable;
+import bomber.games.geometry.Point;
+import bomber.games.model.Positionable;
+import bomber.games.gamesession.GameSession;
 import org.slf4j.LoggerFactory;
 
 

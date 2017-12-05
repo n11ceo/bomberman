@@ -1,8 +1,11 @@
-package model;
+package bomber.games.gameobject;
 
-import geometry.Point;
+import bomber.games.gamesession.GameSession;
+import bomber.games.geometry.Point;
+import bomber.games.model.Positionable;
 import org.slf4j.LoggerFactory;
-import tick.Tickable;
+import bomber.games.model.Tickable;
+
 
 
 public final class  Bomb implements Tickable, Positionable {

@@ -1,4 +1,4 @@
-package tick;
+package bomber.games.model;
 
 /**
  * Any game object that changes with time

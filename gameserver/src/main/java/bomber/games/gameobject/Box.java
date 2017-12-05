@@ -1,9 +1,9 @@
-package block;
+package bomber.games.gameobject;
 
 
-import geometry.Point;
-import model.GameSession;
-import model.Positionable;
+import bomber.games.gamesession.GameSession;
+import bomber.games.geometry.Point;
+import bomber.games.model.Positionable;
 import org.slf4j.LoggerFactory;
 
 public final class Box implements Positionable {
@@ -16,6 +16,7 @@ public final class Box implements Positionable {
         this.position = position;
         log.info("New Box: id={},  id={}, position({}, {})\n", id, position.getX(), position.getY());
     }
+
 
     @Override
     public Point getPosition() {

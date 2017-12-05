@@ -1,6 +1,8 @@
-package model;
+package bomber.games.gamesession;
 
 
+import bomber.games.model.GameObject;
+import bomber.games.model.Tickable;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;

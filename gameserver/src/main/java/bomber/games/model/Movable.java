@@ -1,6 +1,7 @@
-package model;
+package bomber.games.model;
 
 
+import bomber.games.geometry.Point;
 import geometry.Point;
 
 /**

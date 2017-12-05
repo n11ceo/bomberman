@@ -1,4 +1,4 @@
-package geometry;
+package bomber.games.geometry;
 
 /**
  * Entity that can physically intersect, like flame and player
