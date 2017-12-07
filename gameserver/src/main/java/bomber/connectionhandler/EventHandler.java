@@ -1,4 +1,4 @@
-package bomber.gameservice.websocket;
+package bomber.connectionhandler;
 
 import bomber.gameservice.controller.GameController;
 import org.slf4j.LoggerFactory;

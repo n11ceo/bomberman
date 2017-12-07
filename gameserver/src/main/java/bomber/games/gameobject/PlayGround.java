@@ -8,10 +8,11 @@ import org.slf4j.LoggerFactory;
 
 public final class PlayGround implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Box.class);
-    private final int id=0;
+    private final long id;
     private final Point position;
 
-    public PlayGround(final Point position) {
+    public PlayGround(final long id, final Point position) {
+        this.id = id;
         this.position = position;
         log.info("New Box: id={},  id={}, position({}, {})", id, position.getX(), position.getY());
     }
@@ -23,7 +24,7 @@ public final class PlayGround implements Positionable {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 }

@@ -1,4 +1,4 @@
-package bomber.gameservice.websocket;
+package bomber.connectionhandler;
 
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketSession;

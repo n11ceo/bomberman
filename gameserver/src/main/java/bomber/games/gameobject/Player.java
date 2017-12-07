@@ -10,18 +10,18 @@ import org.slf4j.LoggerFactory;
 public final class Player implements Movable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Player.class);
 
-    private final int id=0;
+    private final long id;
     private Point position;
     private long lifeTime;
     private int velocity;
-
 
 
     private int rangeExplosion;
     private int countBomb;
 
 
-    public Player(final Point position) {
+    public Player(final long id, final Point position) {
+        this.id = id;
         this.position = position;
         this.rangeExplosion = 1;
         this.velocity = 1;
@@ -61,7 +61,7 @@ public final class Player implements Movable {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 

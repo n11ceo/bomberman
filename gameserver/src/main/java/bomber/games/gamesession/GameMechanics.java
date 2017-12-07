@@ -1,3 +1,4 @@
+/*
 package bomber.games.gamesession;
 
 import bomber.games.gameobject.*;
@@ -36,9 +37,11 @@ public class GameMechanics {
         //заполним objectsOnMap
         objectsOnMap.add(new PlayGround(new Point(0, 0)));//для механики бесполезно, а фронтенду необходимо
 
-                    /*
-                    Площадкамана построили, насяльника, можно заселять игроков
                     */
+/*
+                    Площадкамана построили, насяльника, можно заселять игроков
+                    *//*
+
 
         objectsOnMap.add(new Player(new Point(1, 1)));//Первый игрок, id = 1
         objectsOnMap.add(new Player(new Point(gameZone, 1)));//Второй игрок, id = 2
@@ -49,11 +52,13 @@ public class GameMechanics {
         //Заполним Box и Wall
         for (int j = 0; j <= gameZone; j = j + brickSize) {
             for (int i = 0; i <= gameZone; i = i + brickSize) {
-                    /*
+                    */
+/*
                     Представим нашу игровую площадку как двумерный массив. Прогуляемся по нему,
                     попутно расставляя объекты по принципу:
                     четная i и четная j заполняется Wall, остальное Box
-                    */
+                    *//*
+
                 if ((i % 2 == 0) && (j % 2 == 0)) {
                     objectsOnMap.add(new Wall(new Point(i, j)));
                 } else {
@@ -62,9 +67,11 @@ public class GameMechanics {
             }
         }
 
-                    /*
-                    Пространство вокруг игроков надо освободить, поэтому
                     */
+/*
+                    Пространство вокруг игроков надо освободить, поэтому
+                    *//*
+
 
         //Для первого игрока(Вверх-Влево)
         objectsOnMap.set(1, new Box(new Point(1, 1), false));
@@ -87,9 +94,11 @@ public class GameMechanics {
         objectsOnMap.set(curId - gameZone, new Box(new Point(gameZone - 1, gameZone), false));
 
 
-                    /*
-                    Теперь (в итоге) бонусы, отдельный лист, так как объект не материален
                     */
+/*
+                    Теперь (в итоге) бонусы, отдельный лист, так как объект не материален
+                    *//*
+
 
         Random rand = new Random();//Рандомная координата выпадающего бонуса (но в пределах gameZone)
         for (int i = 0; i <= bonusCount; i++) {
@@ -204,23 +213,28 @@ public class GameMechanics {
 
 
 
-        /*
+        */
+/*
      Прежде чем писать механику, надо бы определиться как вообще описывать объекты
      (аля Brick содержит поля coord и exist?(bool))
      Player содержит coord
      Bomb содержит coord и countdown
      Bonus предлагаю давать рандомные координаты по полю (и ставить условие, что если бонус на неразрушаемой стене,
      то прогнать алгоритм еще раз)
-     */
+     *//*
+
         playersOnMap.clear();
         bombOnMap.clear();
         return mechanic;
     }
 
     public Replicator writeRepica() {
-        /*
-        Здесь как мне кажется должна быть мапа GameObject, с описанием состояния каждого элемента
         */
+/*
+        Здесь как мне кажется должна быть мапа GameObject, с описанием состояния каждого элемента
+        *//*
+
         return null;
     }
 }
+*/

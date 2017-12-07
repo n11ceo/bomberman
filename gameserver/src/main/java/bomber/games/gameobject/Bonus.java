@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public final class Bonus implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Bonus.class);
-    private final int id=0;
+    private final long id;
     private final Point position;
     private final Type type;
     private boolean show;
@@ -18,7 +18,8 @@ public final class Bonus implements Positionable {
         SPEED, BOMB, RANGE
     }
 
-    public Bonus(final Point position, final Type type, boolean show, boolean exist) {
+    public Bonus(final long id, final Point position, final Type type, final boolean show, final boolean exist) {
+        this.id = id;
         this.position = position;
         this.type = type;
         this.show = show;
@@ -31,7 +32,7 @@ public final class Bonus implements Positionable {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
