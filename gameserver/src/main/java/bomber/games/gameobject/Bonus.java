@@ -8,19 +8,21 @@ import org.slf4j.LoggerFactory;
 
 public final class Bonus implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Bonus.class);
-    private final int id;
+    private final int id=0;
     private final Point position;
     private final Type type;
+    private boolean show;
+    private boolean exist;
 
     public enum Type {
         SPEED, BOMB, RANGE
     }
 
-    public Bonus(final Point position, final Type type) {
-        this.id = GameSession.nextId();
+    public Bonus(final Point position, final Type type, boolean show, boolean exist) {
         this.position = position;
         this.type = type;
-        log.info("New Bonus: id={}, position({}, {}), type={}\n", id, position.getX(), position.getY(), type);
+        this.show = show;
+        this.exist = exist;
     }
 
     @Override

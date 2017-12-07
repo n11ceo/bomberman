@@ -2,13 +2,15 @@ package bomber.games.gameobject;
 
 import bomber.games.gamesession.GameSession;
 import bomber.games.geometry.Point;
+import bomber.games.model.GameObject;
 import bomber.games.model.Movable;
 import org.slf4j.LoggerFactory;
 
 
 public final class Player implements Movable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Player.class);
-    private final int id;
+
+    private final int id=0;
     private Point position;
     private long lifeTime;
     private int velocity;
@@ -17,23 +19,14 @@ public final class Player implements Movable {
 
     private int rangeExplosion;
     private int countBomb;
-    private Type type;
 
 
-    public enum Type {
-        GIRL, BOY
-    }
-
-
-    public Player(final Point position, Type type) {
+    public Player(final Point position) {
         this.position = position;
-        this.id = GameSession.nextId();
         this.rangeExplosion = 1;
         this.velocity = 1;
         this.countBomb = 1;
         this.lifeTime = 0;
-        this.type = type;
-        log.info("New Player: id={}, position({}, {}), type={}\n", id, position.getX(), position.getY(), type);
     }
 
     @Override
@@ -68,13 +61,13 @@ public final class Player implements Movable {
     }
 
     @Override
-    public Point getPosition() {
-        return position;
+    public int getId() {
+        return id;
     }
 
     @Override
-    public int getId() {
-        return id;
+    public Point getPosition() {
+        return position;
     }
 
     @Override
