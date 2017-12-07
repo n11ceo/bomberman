@@ -6,7 +6,7 @@ public class PlayerAction {
     private EventType type;
 
     public enum EventType {
-        U, R, L, D, B
+        Up, Right, Left, Down, Bomb
     }
 
     public PlayerAction(Integer id, EventType type) {

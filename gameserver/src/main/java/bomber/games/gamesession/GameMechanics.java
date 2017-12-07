@@ -17,14 +17,16 @@ public class GameMechanics {
     Replicator replicator = new Replicator();
     ConcurrentLinkedQueue<PlayerAction> eventQueue = new ConcurrentLinkedQueue();
 
-    private ArrayList<GameObject> playersOnMap = new ArrayList<>();
-    private ArrayList<GameObject> objectsOnMap = new ArrayList<>();
-    private ArrayList<GameObject> bombOnMap = new ArrayList<>();
-    private ArrayList<GameObject> bonusOnMap = new ArrayList<>();
+    private Map<Integer,Player> playersOnMap = new HashMap<>();
+    private Map<Integer,GameObject> bricksOnMap = new HashMap<>();
+    private Map<Integer,Bomb> bombsOnMap = new HashMap<>();
+    private Map<Integer,Bonus> bonusOnMap = new HashMap<>();
+    private Map<Integer,PlayerAction> actionOnMap = new HashMap<>();
 
 
     //В оригинальной версии поле 16*16
     final int gameZone = 15;//0,16 - стенки
+    public int playersCount = 4;//Число игроков
     final int brickSize = 0;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
     final int bonusCount = 4;//3*Количество бонусов, которые отспаунятся
 
@@ -110,34 +112,47 @@ public class GameMechanics {
 
     public void readInputQueue() {
 
-        //Напоминаю, что в objectsOnMap Игроки занимают индексты (id) с 1 по 4
         while (!eventQueue.isEmpty()) { //делать до тех пор пока очередь не опустеет
-
             Integer playerId = eventQueue.element().getId(); //заранее узнаем id игрока, возглавляющего очередь
+            if (!actionOnMap.containsKey(playerId)) { //если действий от этого игрока еще не было
+                actionOnMap.put(playerId, eventQueue.element());//Запишем действие в мапу
+            }
+            eventQueue.remove();//удаляем главу этой очереди
+        }
+    }
 
-            switch (eventQueue.element().getType()) { //либо шагает U,D,R,L, либо ставит бомбу B
+    public void clearInputQueue() {
+        eventQueue.clear();
+    }
 
-                case U: //если идет вверх то заменяем игрока новым с координатами, к которым он прошагал за move
-                    Player currentPlayer = (Player) objectsOnMap.get(playerId);
-                    playersOnMap.add(playerId, new Player(currentPlayer.move(Movable.Direction.UP, 10L)));
+    public ArrayList<GameObject> doMechanic() {
+
+        for (int i = 0; i <= playersCount; i++) { //Переходим от Action к Player_position or Bomb_position
+            switch (actionOnMap.get(i).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
+
+                case Up: //если идет вверх то заменяем игрока новым с координатами, к которым он прошагал за move
+                    //Согласно Action, определяем новые координаты для игрока с id = i
+                    Player currentPlayer = new Player(playersOnMap.get(i).move(Movable.Direction.UP, 10L));
+                    //Далее проверяем на коллизии с объектами Bomb, Bonus и Box(Wall)
+
                     break;
 
-                case D://вместо 10l надо вставить tick
+                case Down://вместо 10l надо вставить tick
                     currentPlayer = (Player) objectsOnMap.get(playerId);
                     playersOnMap.add(playerId, new Player(currentPlayer.move(Movable.Direction.DOWN, 10L)));
                     break;
 
-                case L:
+                case Left:
                     currentPlayer = (Player) objectsOnMap.get(playerId);
                     playersOnMap.add(playerId, new Player(currentPlayer.move(Movable.Direction.LEFT, 10L)));
                     break;
 
-                case R:
+                case Right:
                     currentPlayer = (Player) objectsOnMap.get(playerId);
                     playersOnMap.add(playerId, new Player(currentPlayer.move(Movable.Direction.RIGHT, 10L)));
                     break;
 
-                case B:
+                case Bomb:
                     currentPlayer = (Player) objectsOnMap.get(playerId);
 
                     playersOnMap.add(playerId, new Player(currentPlayer.move(Movable.Direction.IDLE, 10L)));
@@ -147,21 +162,23 @@ public class GameMechanics {
                 default:
                     break;
             }
-            eventQueue.remove();//удаляем главу этой очереди
-
 
         }
 
 
-    }
 
-    public void clearInputQueue() {
-        eventQueue.clear();
-    }
 
-    public ArrayList<GameObject> doMechanic() {
 
-        ArrayList<GameObject> mechanic = new ArrayList<>();
+
+
+
+
+
+
+
+
+
+
 
         //Сначала разберемся с перемещениями
         for (GameObject list : objectsOnMap) {
