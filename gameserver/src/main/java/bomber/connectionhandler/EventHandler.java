@@ -19,7 +19,9 @@ import static java.lang.Thread.sleep;
 @Component
 public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
+
     private static HandlerInputJson handlerInputJson;
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
