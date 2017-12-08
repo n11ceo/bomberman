@@ -47,9 +47,6 @@ public final class Point implements Collider {
 
     @Override
     public String toString() {
-        return "Point: {" +
-                "\nx = " + x +
-                "\ny = " + y +
-                "\n}";
+        return "(" + x +", " + y + ")";
     }
 }

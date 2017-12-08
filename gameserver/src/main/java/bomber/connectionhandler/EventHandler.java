@@ -1,7 +1,7 @@
 package bomber.connectionhandler;
 
-import bomber.connectionhandler.json.HandlerInputJson;
-import bomber.connectionhandler.json.Possess;
+import bomber.connectionhandler.json.*;
+import bomber.games.model.GameObject;
 import bomber.games.util.JsonHelper;
 import bomber.gameservice.controller.GameController;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
@@ -20,7 +21,6 @@ import static java.lang.Thread.sleep;
 public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
 
-    private static HandlerInputJson handlerInputJson;
 
 
     @Override
@@ -41,17 +41,28 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         super.afterConnectionClosed(session, closeStatus);
     }
 
-    public static HandlerInputJson handleMoveAndPlanBomb(@NotNull String json) {
-        handlerInputJson = JsonHelper.fromJson(json, HandlerInputJson.class);
-        return handlerInputJson;
+    public static HandleInputJson handleMoveAndPlanBomb(@NotNull String json) { // из json делат объект
+        return JsonHelper.fromJson(json, HandleInputJson.class);
+
     }
 
-    public static String hadnlePossess(@NotNull Possess possess, @NotNull String topic, @NotNull Integer data) {
-        possess.setTopic(topic);
+    public static String handlePossess(@NotNull Integer data) { // возврщает json
+        Possess possess = new Possess();
+        possess.setTopic(Topic.POSSESS);
         possess.setData(data);
         String json = JsonHelper.toJson(possess);
         return json;
     }
+
+
+    public static String handleReplica(@NotNull Replica replica, @NotNull List<? extends GameObject> list) {
+        replica.setTopic(Topic.REPLICA);
+        DataReplica dataReplica = replica.getData();
+        dataReplica.setObjects(list);
+        String json = JsonHelper.toJson(replica);
+        return json;
+    }
+
 
 
 

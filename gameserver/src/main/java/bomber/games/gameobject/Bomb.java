@@ -13,13 +13,14 @@ public final class Bomb implements Tickable, Positionable {
 
     private final long id;
     private long lifeTime = 0;
-    private int rangeExplosion = 1;
+    private int rangeExplosion;
     private final Point position;
 
     public Bomb(long id, final Point position) {
         this.id = id;
         this.position = position;
         this.lifeTime = 0;
+        this.rangeExplosion = 1;
 
         log.info("New Bomb: id={}, position({}, {})\n", id, position.getX(), position.getY());
     }
@@ -58,10 +59,10 @@ public final class Bomb implements Tickable, Positionable {
 
     @Override
     public String toString() {
-        return "Bomb: {" +
+        return "\nBomb: {" +
                 "\nid = " + id +
                 "\nposition = " + position +
-                "\nrangeExplosion" + rangeExplosion +
+                "\nrangeExplosion = " + rangeExplosion +
                 "\nlifeTime = " + lifeTime +
                 "\n}";
     }

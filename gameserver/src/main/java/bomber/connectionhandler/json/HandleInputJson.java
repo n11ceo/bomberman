@@ -1,14 +1,14 @@
 package bomber.connectionhandler.json;
 
-public class Possess {
+public class HandleInputJson {
 
     private Topic topic;
-    private Integer data;
+    private DataHandleInputJson data;
 
-    public Possess() {
+    public HandleInputJson() {
     }
 
-    public Possess(Topic topic, Integer data) {
+    public HandleInputJson(Topic topic, DataHandleInputJson data) {
         this.topic = topic;
         this.data = data;
     }
@@ -17,7 +17,7 @@ public class Possess {
         return topic;
     }
 
-    public Integer getData() {
+    public DataHandleInputJson getData() {
         return data;
     }
 
@@ -25,7 +25,11 @@ public class Possess {
         this.topic = topic;
     }
 
-    public void setData(Integer data) {
+    public void setData(DataHandleInputJson data) {
         this.data = data;
     }
+
+
 }
+
+
