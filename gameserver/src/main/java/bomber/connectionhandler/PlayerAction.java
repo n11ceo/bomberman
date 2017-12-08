@@ -1,4 +1,4 @@
-package bomber.games.gamesession;
+package bomber.connectionhandler;
 
 public class PlayerAction {
 
@@ -25,6 +25,19 @@ public class PlayerAction {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "id = " + id + "type = " + type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else {
+            if (obj instanceof PlayerAction) {
+                PlayerAction playerAction = (PlayerAction) obj;
+                return this.id == playerAction.id && this.type == playerAction.type;
+            }
+            return false;
+        }
     }
 }

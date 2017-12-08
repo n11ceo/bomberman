@@ -38,4 +38,31 @@ public final class Bomb implements Tickable, Positionable {
     public long getId() {
         return id;
     }
+
+    @Override
+    public int hashCode() {
+        return (int) this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else
+        if (obj instanceof Bomb) {
+            Bomb bomb = (Bomb) obj;
+            return this.id ==  bomb.id;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Bomb: {" +
+                "\nid = " + id +
+                "\nposition = " + position +
+                "\nrangeExplosion" + rangeExplosion +
+                "\nlifeTime = " + lifeTime +
+                "\n}";
+    }
 }

@@ -13,8 +13,6 @@ public final class Player implements Movable {
     private Point position;
     private long lifeTime;
     private int velocity;
-
-
     private int rangeExplosion;
     private int countBomb;
 
@@ -25,7 +23,7 @@ public final class Player implements Movable {
         this.rangeExplosion = 1;
         this.velocity = 1;
         this.countBomb = 1;
-        this.lifeTime = 0;
+        this.lifeTime = 0; //надо над этим подумать
     }
 
     @Override
@@ -77,5 +75,39 @@ public final class Player implements Movable {
     public int getRangeExplosion() {
         return rangeExplosion;
     }
+
+    @Override
+    public int hashCode() {
+        return (int) this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else
+            if (obj instanceof Player) {
+                Player player = (Player) obj;
+                return this.id ==  player.id;
+            }
+            return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Player: {" +
+                "\nid = " + id +
+                "\nposition = " + position +
+                "\nrangeExplosion = " + rangeExplosion +
+                "\nvelocity = " + velocity +
+                "\ncountBomb = " + countBomb +
+                "\nlifeTime = " + lifeTime +
+                "\n}";
+    }
+
+    public int getCountBomb() {
+        return countBomb;
+    }
+
 
 }

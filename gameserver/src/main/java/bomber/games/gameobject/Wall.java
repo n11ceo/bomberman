@@ -27,4 +27,29 @@ public final class Wall implements Positionable {
     public long getId() {
         return id;
     }
+
+    @Override
+    public int hashCode() {
+        return (int) this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else
+        if (obj instanceof Player) {
+            Wall wall = (Wall) obj;
+            return this.id ==  wall.id;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Wall: {" +
+                "\nid = " + id +
+                "position" + position +
+                "\n}";
+    }
 }

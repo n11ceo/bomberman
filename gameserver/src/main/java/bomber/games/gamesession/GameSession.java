@@ -51,4 +51,18 @@ public class GameSession implements Tickable {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        } else {
+            if (obj instanceof GameSession) {
+               GameSession gameSession = (GameSession) obj;
+               return this.id == gameSession.id;
+            }
+            return false;
+        }
+    }
+
+
 }

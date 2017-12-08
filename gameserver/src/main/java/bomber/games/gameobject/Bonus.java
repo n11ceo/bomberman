@@ -34,4 +34,29 @@ public final class Bonus implements Positionable {
         return id;
     }
 
+    @Override
+    public int hashCode() {
+        return (int) this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else
+        if (obj instanceof Player) {
+            Bonus bonus = (Bonus) obj;
+            return this.id ==  bonus.id;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Bonus: {" +
+                "\nid = " + id +
+                "\nposition = " + position +
+                "\ntype = " + type +
+                "\n}";
+    }
 }

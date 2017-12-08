@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +36,7 @@ public class GameController {
             produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> checkStatus() {
-        return ResponseEntity.ok().body(new Integer(connectedPlayerCount.intValue()).toString());//возращает gameId
+        return ResponseEntity.ok().body(Integer.toString(connectedPlayerCount.intValue()));//возращает gameId
     }
 
     @RequestMapping(
@@ -45,6 +46,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> create(@RequestParam("playerCount") String playerCount) {
         final long gameId = add();
+         // засовываем gameId с нулевым GameSession, т.е GameSession по логике не существует
         log.info("Game has been created playerCount={}", playerCount);
         return ResponseEntity.ok().body(Long.toString(gameId));//возращает gameId
     }
@@ -73,12 +75,12 @@ public class GameController {
     }
 
     public long add() {
-        long gameId;
+        final long gameId;
         synchronized (this) {
             GeneratorIdSession.getAndIncrementId();
             gameId = GeneratorIdSession.getIdGenerator();
         }
-        gameSessionMap.put(gameId, new GameSession(0)); // засовываем gameId с нулевым GameSession, т.е GameSession по логике не существует
+        gameSessionMap.put(gameId, new GameSession(0));
         return gameId;
     }
 
@@ -92,7 +94,7 @@ public class GameController {
         });
     }
 
-   /* public static void main(String[] args) {                 // Это нужно было для проверки корректности
+   /* public static void main(String[] args) {                  // Это нужно было для проверки корректности
         GameController gameController = new GameController();
         gameController.create("4");
         long gameId = gameController.add();
