@@ -1,3 +1,4 @@
+/*
 package bomber.games.gamesession;
 
 import bomber.games.gameobject.Bomb;
@@ -79,3 +80,4 @@ public class MechanicsSubroutines {
         return false;
     }
 }
+*/

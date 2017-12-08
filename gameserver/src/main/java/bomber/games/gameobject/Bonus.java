@@ -1,7 +1,5 @@
 package bomber.games.gameobject;
 
-
-import bomber.games.gamesession.GameSession;
 import bomber.games.geometry.Point;
 import bomber.games.model.Positionable;
 import org.slf4j.LoggerFactory;

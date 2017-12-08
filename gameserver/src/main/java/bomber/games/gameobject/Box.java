@@ -10,9 +10,10 @@ public final class Box implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Box.class);
     private final Point position;
     private boolean exist;
-    private final int id=0;
+    private final long id;
 
-    public Box(final Point position, boolean exist) {
+    public Box(final long id, final Point position, boolean exist) {
+        this.id = id;
         this.position = position;
         this.exist = exist;
         log.info("New Box: id={},  id={}, position({}, {})\n", position.getX(), position.getY());
@@ -29,7 +30,7 @@ public final class Box implements Positionable {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 }

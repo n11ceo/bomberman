@@ -1,3 +1,4 @@
+/*
 package bomber.gameservice;
 
 import bomber.games.gamesession.GameMechanics;
@@ -22,4 +23,4 @@ public class StartGameTest {
 
     }
 
-}
+}*/

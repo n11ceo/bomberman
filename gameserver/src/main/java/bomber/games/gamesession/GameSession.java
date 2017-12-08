@@ -13,8 +13,13 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GameSession implements Tickable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameSession.class);
     private List<GameObject> gameObjects = new ArrayList<>();
-    private final long id = GeneratorIdSession.getAndIncrementId();
+    private final long id;
     private final AtomicLong idGenerator = new AtomicLong(0); // У каждой сессии свой набор id
+
+
+    public GameSession(long id) {
+        this.id = id;
+    }
 
     public long getAndIncrementIdIntoSession() {
         return idGenerator.getAndIncrement();

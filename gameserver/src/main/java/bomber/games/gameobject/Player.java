@@ -1,8 +1,7 @@
 package bomber.games.gameobject;
 
-import bomber.games.gamesession.GameSession;
+
 import bomber.games.geometry.Point;
-import bomber.games.model.GameObject;
 import bomber.games.model.Movable;
 import org.slf4j.LoggerFactory;
 
