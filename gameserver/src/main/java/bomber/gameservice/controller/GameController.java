@@ -86,12 +86,6 @@ public class GameController {
 
     public void start(final long gameId) {
         new Thread(new GameThread(gameId), "game-mechanics with gameId = " + gameId).start();// создаем новый тред для игры c gameId
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                log.info("hello");
-            }
-        });
     }
 
    /* public static void main(String[] args) {                  // Это нужно было для проверки корректности

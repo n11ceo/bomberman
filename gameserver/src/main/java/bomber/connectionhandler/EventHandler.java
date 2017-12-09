@@ -41,14 +41,13 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         super.afterConnectionClosed(session, closeStatus);
     }
 
-    public static HandleInputJson handleMoveAndPlanBomb(@NotNull String json) { // из json делат объект
+    public static HandleInputJson handleMoveAndPlanBomb(@NotNull String json) { // из json делает объект
         return JsonHelper.fromJson(json, HandleInputJson.class);
 
     }
 
     public static String handlePossess(@NotNull Integer data) { // возврщает json
         Possess possess = new Possess();
-        possess.setTopic(Topic.POSSESS);
         possess.setData(data);
         String json = JsonHelper.toJson(possess);
         return json;
@@ -56,7 +55,6 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
 
 
     public static String handleReplica(@NotNull Replica replica, @NotNull List<? extends GameObject> list) {
-        replica.setTopic(Topic.REPLICA);
         DataReplica dataReplica = replica.getData();
         dataReplica.setObjects(list);
         String json = JsonHelper.toJson(replica);

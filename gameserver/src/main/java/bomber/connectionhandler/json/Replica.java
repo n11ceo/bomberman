@@ -3,12 +3,10 @@ package bomber.connectionhandler.json;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 
-import java.net.URI;
 
 public class Replica {
 
-    public static URI txt;
-    private Topic topic;
+    private final Topic topic = Topic.REPLICA;
     private DataReplica data = new DataReplica();
 
     public Replica() {
@@ -23,9 +21,6 @@ public class Replica {
         return data;
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
 
     public void setData(DataReplica data) {
         this.data = data;

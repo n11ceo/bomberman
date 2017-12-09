@@ -2,16 +2,12 @@ package bomber.connectionhandler.json;
 
 public class Possess {
 
-    private Topic topic;
+    private final Topic topic = Topic.POSSESS;
     private Integer data;
 
     public Possess() {
     }
 
-    public Possess(Topic topic, Integer data) {
-        this.topic = topic;
-        this.data = data;
-    }
 
     public Topic getTopic() {
         return topic;
@@ -21,9 +17,6 @@ public class Possess {
         return data;
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
 
     public void setData(Integer data) {
         this.data = data;
