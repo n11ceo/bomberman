@@ -1,11 +1,6 @@
 package bomber.connectionhandler;
 
-import bomber.connectionhandler.json.*;
-import bomber.games.model.GameObject;
-import bomber.games.util.JsonHelper;
 import bomber.gameservice.controller.GameController;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -13,7 +8,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -48,47 +42,6 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         //connected player count?
         ConnectionPool.remove(session);
         super.afterConnectionClosed(session, closeStatus);
-    }
-    
-
-    public static PlayerAction handleMoveAndPlanBombFromJson(@NotNull String json) { // из json делает объект
-        HandleInputJson handleInputJson = JsonHelper.fromJson(json, HandleInputJson.class);
-        PlayerAction playerAction = convertToPlayerAction(handleInputJson);
-        if (playerAction == null) {
-            throw new NullPointerException("Мы не смогли конверитировать json в playerAction");
-        } else {
-            return playerAction;
-        }
-
-    }
-
-    @NotNull
-    public static String handlePossessToJson(@NotNull final Integer data) { // возврщает json
-        Possess possess = new Possess();
-        possess.setData(data);
-        return JsonHelper.toJson(possess);
-    }
-
-
-    @NotNull
-    public static String handleReplica(@NotNull final Replica replica, @NotNull final List<? extends GameObject> list) {
-        DataReplica dataReplica = replica.getData();
-        dataReplica.setObjects(list);
-        return JsonHelper.toJson(replica);
-    }
-
-    @Nullable
-    private static PlayerAction convertToPlayerAction(@NotNull HandleInputJson handleInputJson) {
-        PlayerAction playerAction = new PlayerAction();
-        if (handleInputJson.getTopic() == Topic.MOVE) {
-            playerAction.setType(handleInputJson.getData().getEventType());
-            return playerAction;
-        }
-        if (handleInputJson.getTopic() == Topic.PLANT_BOMB) {
-            playerAction.setType(PlayerAction.EventType.BOMB);
-            return playerAction;
-        }
-        return null;
     }
 
     private static Player uriToPlayer(final URI uri) {
