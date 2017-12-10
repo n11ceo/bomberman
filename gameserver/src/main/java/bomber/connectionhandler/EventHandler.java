@@ -1,5 +1,6 @@
 package bomber.connectionhandler;
 
+import bomber.connectionhandler.json.Json;
 import bomber.gameservice.controller.GameController;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         GameController.getGameSession(ConnectionPool.get(session).getGameid()).getInputQueue()
-                .add(handleMoveAndPlanBombFromJson(message.getPayload()));
+                .add(Json.jsonToPlayerAction(message.getPayload()));
 
     }
 
