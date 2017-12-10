@@ -14,42 +14,42 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
 @Component
 public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
-
+    private static final Map<WebSocketSession, Player> ConnectionPool = new HashMap<>();
+    public static final String GAMEID_ARG = "gameId";
+    public static final String NAME_ARG = "gameId";
 
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        log.info("WebSocket connection established - " + session);
-        GameController.setConnectedPlayerCount(GameController.getConnectedPlayerCount() + 1);
-        log.info("Prolonging WS connection for 60 SEC for player #" + GameController.getConnectedPlayerCount());
-        sleep(TimeUnit.SECONDS.toMillis(300));
-        log.info("Closing connection for player #" + "asd");
-        session.close();
+        //connected player count?
+        ConnectionPool.put(session, uriToPlayer(session.getUri()));
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        GameController.getGameSession(ConnectionPool.get(session).getGameid()).getInputQueue()
+                .add(handleMoveAndPlanBombFromJson(message.getPayload()));
 
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        GameController.setConnectedPlayerCount(GameController.getConnectedPlayerCount() - 1);
-        log.info("Socket Closed: [" + closeStatus.getCode() + "] " + closeStatus.getReason());
+        //connected player count?
+        ConnectionPool.remove(session);
         super.afterConnectionClosed(session, closeStatus);
     }
-
-
-
+    
 
     public static PlayerAction handleMoveAndPlanBombFromJson(@NotNull String json) { // из json делает объект
         HandleInputJson handleInputJson = JsonHelper.fromJson(json, HandleInputJson.class);
@@ -90,16 +90,19 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         }
         return null;
     }
-   /* public static String handleReplica(@NotNull Replica replica, @NotNull List<? extends GameObject> list,
-                                       Map<? extends GameObject, ? extends GameObject> map) {
-        DataReplica dataReplica = replica.getData();
-        dataReplica.setObjects(list);
-        dataReplica.setExampleEEE(map);
-        String json = JsonHelper.toJson(replica);
-        return json;
-    }*/
 
-
+    private static Player uriToPlayer(final URI uri) {
+        Player player = new Player(); //is id needed?
+        for (String iter : uri.getQuery().split("&")) {
+            if (iter.contains(GAMEID_ARG) && !(iter.indexOf("=") == iter.length() - 1)) {
+                player.setGameid(Integer.parseInt(iter.substring(iter.indexOf("=") + 1, iter.length() - 1)));
+            }
+            if (iter.contains(NAME_ARG) && !(iter.indexOf("=") == iter.length() - 1)) {
+                player.setName(iter.substring(iter.indexOf("=") + 1, iter.length() - 1));
+            }
+        }
+        return player;
+    }
 
 
 }

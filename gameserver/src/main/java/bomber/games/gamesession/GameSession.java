@@ -1,6 +1,7 @@
 package bomber.games.gamesession;
 
 
+import bomber.connectionhandler.PlayerAction;
 import bomber.games.model.GameObject;
 import bomber.games.model.Tickable;
 import bomber.games.util.GeneratorIdSession;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GameSession implements Tickable {
@@ -15,7 +17,11 @@ public class GameSession implements Tickable {
     private List<GameObject> gameObjects = new ArrayList<>();
     private final long id;
     private final AtomicLong idGenerator = new AtomicLong(0); // У каждой сессии свой набор id
+    private  ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
 
+    public ConcurrentLinkedQueue<PlayerAction> getInputQueue() {
+        return inputQueue;
+    }
 
     public GameSession(long id) {
         this.id = id;
