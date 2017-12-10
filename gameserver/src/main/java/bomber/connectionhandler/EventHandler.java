@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.Thread.sleep;
 
 @Component
-public class Json extends TextWebSocketHandler implements WebSocketHandler {
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(Json.class);
+public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
 
 
 
