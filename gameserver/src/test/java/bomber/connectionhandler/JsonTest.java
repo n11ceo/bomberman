@@ -1,13 +1,9 @@
 package bomber.connectionhandler;
 
-import bomber.connectionhandler.json.HandleInputJson;
+import bomber.connectionhandler.json.Json;
 import bomber.connectionhandler.json.Replica;
-import bomber.games.gameobject.Bomb;
-import bomber.games.gameobject.Box;
-import bomber.games.gameobject.Player;
 import bomber.games.gameobject.Wall;
 import bomber.games.geometry.Point;
-import bomber.games.model.GameObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,22 +13,26 @@ import java.util.*;
 public class JsonTest {
     @Test
     public void possessTest() {
-        String json = EventHandler.handlePossessToJson(123);
+        String json = Json.handlePossessToJson(123);
         Assert.assertEquals(json, "{\"topic\":\"POSSESS\",\"data\":123}");
     }
 
     @Test
     public void replicaTest() {
         Replica replica = new Replica();
-        List<GameObject> list = new ArrayList<>();
+        /*List<GameObject> list = new ArrayList<>();
         list.add(new Bomb(1, new Point(10, 20)));
         list.add(new Bomb(2, new Point(1, 2)));
         list.add(new Bomb(3, new Point(1, 10)));
         list.add(new Box(5, new Point(4, 6), true));
-        list.add(new Wall(6, new Point(6, 8)));
-        String json = EventHandler.handleReplica(replica, list);
+        list.add(new Wall(6, new Point(6, 8)));*/
+        Map<Integer, Wall> map = new HashMap<>(20);
+        map.put(10, new Wall(10, new Point(10,10)));
+        map.put(11, new Wall(11, new Point(20,20)));
+        /*String json = EventHandler.handleReplica(replica, list);
+        System.out.println(json);*/
+        String json = Json.handleReplica(replica, map);
         System.out.println(json);
-
     }
 
   /*  @Test
@@ -60,7 +60,7 @@ public class JsonTest {
         while ((c = fin.read()) != -1) {
             json += (char) c;
         }
-        PlayerAction playerAction = EventHandler.handleMoveAndPlanBombFromJson(json);
+        PlayerAction playerAction = Json.handleMoveAndPlanBombFromJson(json);
         Assert.assertEquals(playerAction.getType(), PlayerAction.EventType.DOWN);
     }
 
@@ -73,7 +73,7 @@ public class JsonTest {
         while ((c = fin.read()) != -1) {
             json += (char) c;
         }
-        PlayerAction playerAction = EventHandler.handleMoveAndPlanBombFromJson(json);
+        PlayerAction playerAction = Json.handleMoveAndPlanBombFromJson(json);
         Assert.assertEquals(playerAction.getType(), PlayerAction.EventType.BOMB);
     }
 

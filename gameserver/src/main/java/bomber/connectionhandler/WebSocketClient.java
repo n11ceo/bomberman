@@ -14,7 +14,7 @@ public class WebSocketClient {
         StandardWebSocketClient client = new StandardWebSocketClient();
         WebSocketSession session = null;
         try {
-            EventHandler socket = new EventHandler();
+            Json socket = new Json();
             ListenableFuture<WebSocketSession> fut = client.doHandshake(socket, uri);
             session = fut.get();
 
