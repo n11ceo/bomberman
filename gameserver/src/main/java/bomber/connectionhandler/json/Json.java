@@ -14,7 +14,7 @@ public final class Json {
 
 
 
-    public static PlayerAction handleMoveAndPlanBombFromJson(@NotNull String json) { // Это для PLANT_BOMB и MOVE
+    public static PlayerAction jsonToPlayerAction(@NotNull String json) { // Это для PLANT_BOMB и MOVE
         HandleInputJson handleInputJson = JsonHelper.fromJson(json, HandleInputJson.class);
         PlayerAction playerAction = convertToPlayerAction(handleInputJson);
         if (playerAction == null) {
@@ -26,7 +26,7 @@ public final class Json {
     }
 
     @NotNull
-    public static String handlePossessToJson(@NotNull final Integer data) { // это для отправки json
+    public static String possesToJson(@NotNull final Integer data) { // это для отправки json
         Possess possess = new Possess();
         possess.setData(data);
         return JsonHelper.toJson(possess);
@@ -34,7 +34,8 @@ public final class Json {
 
 
     @NotNull
-    public static String handleReplica(@NotNull final Replica replica, @NotNull final Map<Integer,? extends GameObject> map) { //отправка Replic через JSON
+    public static String replicaToJson(@NotNull final Map<Integer,? extends GameObject> map) { //отправка Replic через JSON
+        Replica replica = new Replica();
         DataReplica dataReplica = replica.getData();
         List<GameObject> list = new ArrayList<>(map.values());
         dataReplica.setObjects(list);

@@ -13,7 +13,7 @@ import java.util.*;
 public class EventHandlerTest {
     @Test
     public void possessTest() {
-        String json = Json.handlePossessToJson(123);
+        String json = Json.possesToJson(123);
         Assert.assertEquals(json, "{\"topic\":\"POSSESS\",\"data\":123}");
     }
 
@@ -23,7 +23,7 @@ public class EventHandlerTest {
         Map<Integer, Wall> map = new HashMap<>(20);
         map.put(10, new Wall(10, new Point(10,10)));
         map.put(11, new Wall(11, new Point(20,20)));
-        String json = Json.handleReplica(replica, map);
+        String json = Json.replicaToJson(replica, map);
         System.out.println(json);
     }
 
@@ -36,7 +36,7 @@ public class EventHandlerTest {
         while ((c = fin.read()) != -1) {
             json += (char) c;
         }
-        PlayerAction playerAction = Json.handleMoveAndPlanBombFromJson(json);
+        PlayerAction playerAction = Json.jsonToPlayerAction(json);
         Assert.assertEquals(playerAction.getType(), PlayerAction.EventType.DOWN);
     }
 
@@ -49,7 +49,7 @@ public class EventHandlerTest {
         while ((c = fin.read()) != -1) {
             json += (char) c;
         }
-        PlayerAction playerAction = Json.handleMoveAndPlanBombFromJson(json);
+        PlayerAction playerAction = Json.jsonToPlayerAction(json);
         Assert.assertEquals(playerAction.getType(), PlayerAction.EventType.BOMB);
     }
 
