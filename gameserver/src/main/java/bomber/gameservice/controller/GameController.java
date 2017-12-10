@@ -26,10 +26,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GameController {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameController.class);
     private static AtomicInteger connectedPlayerCount = new AtomicInteger(0);
-    public static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
+    private static Map<Long, GameSession> gameSessionMap = new ConcurrentHashMap<>();
     /**
      * curl -i localhost:8090/game/create
      */
+
+    public static GameSession getGameSession(long gameSessionId) {
+        return gameSessionMap.get(gameSessionId);
+    }
+
+
     @RequestMapping(
             path = "/checkstatus",
             method = RequestMethod.GET,
@@ -88,14 +94,5 @@ public class GameController {
         new Thread(new GameThread(gameId), "game-mechanics with gameId = " + gameId).start();// создаем новый тред для игры c gameId
     }
 
-   /* public static void main(String[] args) {                  // Это нужно было для проверки корректности
-        GameController gameController = new GameController();
-        gameController.create("4");
-        long gameId = gameController.add();
-        log.info(String.valueOf(gameId));
-        log.info(String.valueOf(GeneratorIdSession.getIdGenerator()));
-        gameController.start(gameId);
-        if (gameSessionMap.get(gameId).getId() == gameId)
-            log.info("all is ok");
-    }*/
+
 }
