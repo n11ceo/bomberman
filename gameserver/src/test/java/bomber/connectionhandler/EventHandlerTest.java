@@ -23,7 +23,7 @@ public class EventHandlerTest {
         Map<Integer, Wall> map = new HashMap<>(20);
         map.put(10, new Wall(10, new Point(10,10)));
         map.put(11, new Wall(11, new Point(20,20)));
-        String json = Json.replicaToJson(replica, map);
+        String json = Json.replicaToJson(map);
         System.out.println(json);
     }
 

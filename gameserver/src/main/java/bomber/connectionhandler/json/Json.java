@@ -5,24 +5,28 @@ import bomber.games.model.GameObject;
 import bomber.games.util.JsonHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class Json {
+    private static Logger log = LoggerFactory.getLogger(Json.class);
 
 
-
-    public static PlayerAction jsonToPlayerAction(@NotNull String json) { // Это для PLANT_BOMB и MOVE
+    @Nullable
+    public static PlayerAction jsonToPlayerAction(@NotNull Integer PlayerId,@NotNull String json) { // Это для PLANT_BOMB и MOVE
         HandleInputJson handleInputJson = JsonHelper.fromJson(json, HandleInputJson.class);
-        PlayerAction playerAction = convertToPlayerAction(handleInputJson);
+        PlayerAction playerAction = convertToPlayerAction(PlayerId, handleInputJson);
         if (playerAction == null) {
-            throw new NullPointerException("Мы не смогли конверитировать json в playerAction");
+            log.error("Не смогли конвертировать Json в PlayerAction");
+            log.error("Клиент отправил не правильный тип json");
+            return null;
         } else {
             return playerAction;
         }
-
     }
 
     @NotNull
@@ -43,14 +47,16 @@ public final class Json {
     }
 
     @Nullable
-    private static PlayerAction convertToPlayerAction(@NotNull HandleInputJson handleInputJson) {
+    private static PlayerAction convertToPlayerAction(@NotNull Integer PlayerId,@NotNull HandleInputJson handleInputJson) {
         PlayerAction playerAction = new PlayerAction();
         if (handleInputJson.getTopic() == Topic.MOVE) {
+            playerAction.setId(PlayerId);
             playerAction.setType(handleInputJson.getData().getEventType());
             return playerAction;
         }
 
         if (handleInputJson.getTopic() == Topic.PLANT_BOMB) {
+            playerAction.setId(PlayerId);
             playerAction.setType(PlayerAction.EventType.BOMB);
             return playerAction;
         }
