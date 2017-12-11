@@ -15,47 +15,48 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 @Component
 public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
-    private static final Map<WebSocketSession, Player> ConnectionPool = new HashMap<>();
+    private static final Map<WebSocketSession, Player> connectionPool = new HashMap<>();
     public static final String GAMEID_ARG = "gameId";
-    public static final String NAME_ARG = "gameId";
-
-
+    public static final String NAME_ARG = "name";
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         //connected player count?
-        ConnectionPool.put(session, uriToPlayer(session.getUri()));
+        connectionPool.put(session, uriToPlayer(session.getUri()));
+        connectionPool.get(session).setId(session.hashCode());
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        GameController.getGameSession(ConnectionPool.get(session).getGameid()).getInputQueue()
-                .add(Json.jsonToPlayerAction(session.hashCode(),message.getPayload()));
+        GameController.getGameSession(connectionPool.get(session).getGameid()).getInputQueue()
+                .add(Json.jsonToPlayerAction(connectionPool.get(session).getId(),message.getPayload()));
 
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         //connected player count?
-        ConnectionPool.remove(session);
+        connectionPool.remove(session);
         super.afterConnectionClosed(session, closeStatus);
     }
 
     public void sendReplica(final int gameId) throws IOException {
-        for (WebSocketSession session : HashMapUtil.getSessionsArrayByGameId(ConnectionPool, gameId))
+        for (WebSocketSession session : HashMapUtil.getSessionsArrayByGameId(connectionPool, gameId))
             session.sendMessage(
                     new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
     }
 
     public void sendPossess(final int playerId) throws IOException {
-        HashMapUtil.getSessionByPlayerId(ConnectionPool, playerId).sendMessage(
+        HashMapUtil.getSessionByPlayerId(connectionPool, playerId).sendMessage(
                 new TextMessage(Json.possesToJson(playerId)));
     }
 
@@ -70,6 +71,14 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
             }
         }
         return player;
+    }
+
+    public static Set<Integer> getSessionIdSet() {
+        Set<Integer> set = new HashSet<>();
+        for (WebSocketSession webSocketSession : connectionPool.keySet()) {
+            set.add(webSocketSession.hashCode());
+        }
+        return set;
     }
 
 
