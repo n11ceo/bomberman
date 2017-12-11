@@ -2,10 +2,10 @@ package bomber.connectionhandler;
 
 public class Player {
     private long gameid = 0;
-    private long id = 0; //is id needed?
+    private int id = 0; //is id needed?
     private String name = null;
 
-    public Player(long gameid, long id, String name) {
+    public Player(long gameid, int id, String name) {
         this.gameid = gameid;
         this.id = id;
         this.name = name;
@@ -23,11 +23,11 @@ public class Player {
         this.gameid = gameid;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
