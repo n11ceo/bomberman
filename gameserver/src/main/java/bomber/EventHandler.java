@@ -1,7 +1,7 @@
-package bomber.connectionhandler;
+package bomber;
 
+import bomber.connectionhandler.Player;
 import bomber.connectionhandler.json.Json;
-import bomber.games.gamesession.GameSession;
 import bomber.games.util.HashMapUtil;
 import bomber.gameservice.controller.GameController;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static java.lang.Thread.sleep;
 
 
 @Component
@@ -60,14 +62,14 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
                 new TextMessage(Json.possesToJson(playerId)));
     }
 
-    private static Player uriToPlayer(final URI uri) {
+    public static Player uriToPlayer(final URI uri) {
         Player player = new Player(); //is id needed?
         for (String iter : uri.getQuery().split("&")) {
             if (iter.contains(GAMEID_ARG) && !(iter.indexOf("=") == iter.length() - 1)) {
-                player.setGameid(Integer.parseInt(iter.substring(iter.indexOf("=") + 1, iter.length() - 1)));
+                player.setGameid(Integer.parseInt(iter.substring(iter.indexOf("=") + 1, iter.length())));
             }
             if (iter.contains(NAME_ARG) && !(iter.indexOf("=") == iter.length() - 1)) {
-                player.setName(iter.substring(iter.indexOf("=") + 1, iter.length() - 1));
+                player.setName(iter.substring(iter.indexOf("=") + 1, iter.length()));
             }
         }
         return player;

@@ -19,10 +19,7 @@ public class GameThread implements Runnable {
         log.info("Start new thread called game-mechanics with gameId = " + gameId);
         GameSession gameSession = new GameSession(gameId);
         log.info("Game has been init gameId={}", gameId);
-
-        GameSession oldGameSession = gameSessionMap.get(gameId);
-        gameSessionMap.replace(gameId, oldGameSession, gameSession); // засунули gameSession с заданным gameId в gameSessionMap
-
-        // Дальше надо добавить игровые сущности ....
+        gameSessionMap.put(gameId, gameSession);
     }
+
 }
