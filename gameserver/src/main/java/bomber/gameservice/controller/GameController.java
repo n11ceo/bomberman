@@ -80,7 +80,7 @@ public class GameController {
         connectedPlayerCount.set(value);
     }
 
-    public long add() {
+    private long add() {
         final long gameId;
         synchronized (this) {
             GeneratorIdSession.getAndIncrementId();
@@ -90,7 +90,7 @@ public class GameController {
         return gameId;
     }
 
-    public void start(final long gameId) {
+    private void start(final long gameId) {
         new Thread(new GameThread(gameId), "game-mechanics with gameId = " + gameId).start();// создаем новый тред для игры c gameId
     }
 
