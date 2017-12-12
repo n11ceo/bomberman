@@ -11,7 +11,7 @@ public final class Player implements Movable {
 
 
     private Point position;
-    private final long id;
+    private final int id;
     private long lifeTime;
     private int velocity;
     private int rangeExplosion;
@@ -19,7 +19,7 @@ public final class Player implements Movable {
     private final String type = "Pawn";
 
 
-    public Player(final long id, final Point position) {
+    public Player(final int id, final Point position) {
         this.id = id;
         this.position = position;
         this.rangeExplosion = 1;
@@ -29,38 +29,37 @@ public final class Player implements Movable {
     }
 
     @Override
-    public Point move(Direction direction, long time) {
-        if (time > 0) {
-            switch (direction) {
-                case UP:
-                    position = new Point(position.getX(), (int) (position.getY() + (time * velocity)));
-                    tick(1L);
-                    break;
-                case DOWN:
-                    position = new Point(position.getX(), (int) (position.getY() - (time * velocity)));
-                    tick(1L);
-                    break;
-                case RIGHT:
-                    position = new Point((int) (position.getX() + (time * velocity)), position.getY());
-                    tick(1L);
-                    break;
-                case LEFT:
-                    position = new Point((int) (position.getX() - (time * velocity)), position.getY());
-                    tick(1L);
-                    break;
-                case IDLE:
-                    tick(1L);
-                    break;
-                default:
-                    break;
-            }
-        } else
-            throw new IllegalArgumentException("can't support negative time");
+    public Point move(Direction direction) {
+
+        switch (direction) {
+            case UP:
+                position = new Point(position.getX(), (int) (position.getY() + (velocity)));
+                tick(1L);
+                break;
+            case DOWN:
+                position = new Point(position.getX(), (int) (position.getY() - (velocity)));
+                tick(1L);
+                break;
+            case RIGHT:
+                position = new Point((int) (position.getX() + (velocity)), position.getY());
+                tick(1L);
+                break;
+            case LEFT:
+                position = new Point((int) (position.getX() - (velocity)), position.getY());
+                tick(1L);
+                break;
+            case IDLE:
+                tick(1L);
+                break;
+            default:
+                break;
+        }
+
         return position;
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -68,6 +67,11 @@ public final class Player implements Movable {
     public Point getPosition() {
         return position;
     }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
 
     @Override
     public void tick(long elapsed) {
@@ -88,11 +92,11 @@ public final class Player implements Movable {
         if (this == obj)
             return true;
         else
-            if (obj instanceof Player) {
-                Player player = (Player) obj;
-                return this.id ==  player.id;
-            }
-            return false;
+        if (obj instanceof Player) {
+            Player player = (Player) obj;
+            return this.id ==  player.id;
+        }
+        return false;
     }
 
     @Override
@@ -111,5 +115,19 @@ public final class Player implements Movable {
         return countBomb;
     }
 
+    public int getVelocity() {
+        return velocity;
+    }
 
+    public void setVelocity(int velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setCountBomb(int countBomb) {
+        this.countBomb = countBomb;
+    }
+
+    public void setRangeExplosion(int rangeExplosion) {
+        this.rangeExplosion = rangeExplosion;
+    }
 }

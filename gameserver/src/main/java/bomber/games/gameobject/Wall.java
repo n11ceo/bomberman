@@ -10,10 +10,10 @@ public final class Wall implements Positionable {
 
 
     private final Point position;
-    private final long id;
+    private final int id;
     private final String type = "Wall";
 
-    public Wall(final long id, final Point position) {
+    public Wall(final int id, final Point position) {
         this.id = id;
         this.position = position;
         log.info("New Wall: id={},  id={}, position({}, {})", id, position.getX(), position.getY());
@@ -26,13 +26,13 @@ public final class Wall implements Positionable {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
 
     @Override
     public int hashCode() {
-        return (int) this.id;
+        return  this.id;
     }
 
     @Override

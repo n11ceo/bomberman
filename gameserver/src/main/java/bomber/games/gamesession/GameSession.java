@@ -18,23 +18,23 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GameSession implements Tickable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameSession.class);
     private Map<Integer, GameObject> replica = new HashMap<>();
-    private final long id;
-    private final AtomicInteger idGenerator = new AtomicInteger(1); // У каждой сессии свой набор id
+    private final int id;
+    private final AtomicInteger idGenerator = new AtomicInteger(0); // У каждой сессии свой набор id
     private  ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
 
     public ConcurrentLinkedQueue<PlayerAction> getInputQueue() {
         return inputQueue;
     }
 
-    public GameSession(long id) {
+    public GameSession(int id) {
         this.id = id;
     }
 
-    public long getAndIncrementIdIntoSession() {
+    public Integer getInc() {
         return idGenerator.getAndIncrement();
     }
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -66,8 +66,8 @@ public class GameSession implements Tickable {
             return true;
         } else {
             if (obj instanceof GameSession) {
-               GameSession gameSession = (GameSession) obj;
-               return this.id == gameSession.id;
+                GameSession gameSession = (GameSession) obj;
+                return this.id == gameSession.id;
             }
             return false;
         }

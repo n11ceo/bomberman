@@ -6,22 +6,19 @@ import org.slf4j.LoggerFactory;
 
 public final class Bonus implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Bonus.class);
-    private final long id;
+    private final int id;
     private final Point position;
-    private boolean show;
-    private boolean exist;
     private final Type type;
 
     public enum Type {
         BONUS_SPEED, BONUS_BOMB, BONUS_RANGE
     }
 
-    public Bonus(final long id, final Point position, final Type type, final boolean show, final boolean exist) {
+    public Bonus(final int id, final Point position, final Type type) {
         this.id = id;
         this.position = position;
         this.type = type;
-        this.show = show;
-        this.exist = exist;
+
     }
 
     @Override
@@ -30,7 +27,7 @@ public final class Bonus implements Positionable {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -43,10 +40,9 @@ public final class Bonus implements Positionable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        else
-        if (obj instanceof Player) {
+        else if (obj instanceof Player) {
             Bonus bonus = (Bonus) obj;
-            return this.id ==  bonus.id;
+            return this.id == bonus.id;
         }
         return false;
     }
@@ -58,5 +54,9 @@ public final class Bonus implements Positionable {
                 "\nposition = " + position +
                 "\ntype = " + type +
                 "\n}";
+    }
+
+    public Type getType() {
+        return type;
     }
 }
