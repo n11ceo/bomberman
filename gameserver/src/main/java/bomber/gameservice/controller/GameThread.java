@@ -1,9 +1,10 @@
-package bomber.connectionhandler;
+package bomber.gameservice.controller;
 
+import bomber.games.gamesession.GameMechanics;
 import bomber.games.gamesession.GameSession;
 import org.slf4j.LoggerFactory;
 
-import static bomber.connectionhandler.GameController.gameSessionMap;
+import static bomber.gameservice.controller.GameController.gameSessionMap;
 
 public class GameThread implements Runnable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameThread.class);
@@ -17,9 +18,9 @@ public class GameThread implements Runnable {
     @Override
     public void run() {
         log.info("Start new thread called game-mechanics with gameId = " + gameId);
-        GameSession gameSession = new GameSession((int) gameId);
+//        GameSession gameSession = new GameSession((int) gameId);
         log.info("Game has been init gameId={}", gameId);
-        gameSessionMap.put(gameId, gameSession);
+//        gameSessionMap.put(gameId, gameSession);
     }
 
 }
