@@ -28,7 +28,7 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
     public static final String NAME_ARG = "name";
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         //connected player count?
         connectionPool.put(session, uriToPlayer(session.getUri()));

@@ -36,7 +36,7 @@ public class EventHandlerTest {
         while ((c = fin.read()) != -1) {
             json += (char) c;
         }
-        PlayerAction playerAction = Json.jsonToPlayerAction(json);
+        PlayerAction playerAction = Json.jsonToPlayerAction(1, json);
         Assert.assertEquals(playerAction.getType(), PlayerAction.EventType.DOWN);
     }
 
@@ -49,7 +49,7 @@ public class EventHandlerTest {
         while ((c = fin.read()) != -1) {
             json += (char) c;
         }
-        PlayerAction playerAction = Json.jsonToPlayerAction(json);
+        PlayerAction playerAction = Json.jsonToPlayerAction(1, json);
         Assert.assertEquals(playerAction.getType(), PlayerAction.EventType.BOMB);
     }
 

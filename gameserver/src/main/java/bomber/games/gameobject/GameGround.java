@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 */
 public final class GameGround implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Box.class);
-    private final long id;
+    private final int id;
     private final Point position;
 
-    public GameGround(final long id, final Point position) {
+    public GameGround(final int id, final Point position) {
         this.id = id;
         this.position = position;
         log.info("New Box: id={},  id={}, position({}, {})", id, position.getX(), position.getY());
@@ -25,7 +25,7 @@ public final class GameGround implements Positionable {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
 }

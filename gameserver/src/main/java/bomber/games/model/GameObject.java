@@ -9,6 +9,6 @@ public interface GameObject {
     /**
      * Unique id
      */
-    long getId();
+    int getId();
     Point getPosition();
 }

@@ -17,7 +17,7 @@ public final class Json {
 
 
     @Nullable
-    public static PlayerAction jsonToPlayerAction(@NotNull Integer PlayerId,@NotNull String json) { // Это для PLANT_BOMB и MOVE
+    public static PlayerAction jsonToPlayerAction(@NotNull final Integer PlayerId,@NotNull final String json) { // Это для PLANT_BOMB и MOVE
         HandleInputJson handleInputJson = JsonHelper.fromJson(json, HandleInputJson.class);
         PlayerAction playerAction = convertToPlayerAction(PlayerId, handleInputJson);
         if (playerAction == null) {
@@ -47,7 +47,7 @@ public final class Json {
     }
 
     @Nullable
-    private static PlayerAction convertToPlayerAction(@NotNull Integer PlayerId,@NotNull HandleInputJson handleInputJson) {
+    private static PlayerAction convertToPlayerAction(@NotNull final Integer PlayerId,@NotNull final HandleInputJson handleInputJson) {
         PlayerAction playerAction = new PlayerAction();
         if (handleInputJson.getTopic() == Topic.MOVE) {
             playerAction.setId(PlayerId);

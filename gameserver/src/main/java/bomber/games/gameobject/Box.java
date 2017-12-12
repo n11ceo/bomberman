@@ -1,24 +1,20 @@
 package bomber.games.gameobject;
 
 
-import bomber.games.gamesession.GameSession;
 import bomber.games.geometry.Point;
 import bomber.games.model.Positionable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.LoggerFactory;
 
 public final class Box implements Positionable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Box.class);
     private final Point position;
-    private final long id;
+    private final int id;
     private final String type = "Box";
-    @JsonIgnore
-    private boolean exist;
 
-    public Box(final long id, final Point position, boolean exist) {
+
+    public Box(final int id, final Point position) {
         this.id = id;
         this.position = position;
-        this.exist = exist;
         log.info("New Box: id={},  id={}, position({}, {})\n", position.getX(), position.getY());
     }
 
@@ -28,12 +24,9 @@ public final class Box implements Positionable {
         return position;
     }
 
-    public boolean isExist() {
-        return exist;
-    }
 
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
 
