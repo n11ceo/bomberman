@@ -27,15 +27,15 @@ public class GameMechanics {
                                                      //by creation, arguments - replica
 
         //Создали землю, на которой будем играть
-        replica.put(idGenerator.getAndIncrement(), new GameGround(idGenerator.getAndIncrement(), new Point(0, 0)));//для механики бесполезно, а фронтенду необходимо
+        replica.put(idGenerator.getAndIncrement(), new GameGround(idGenerator.get(), new Point(0, 0)));//для механики бесполезно, а фронтенду необходимо
 
         /*
         Площадкамана построили, насяльника, можно заселять игроков
         */
-        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(1, 1)));//Первый игрок
-        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(gameZone, 1)));//Второй игрок
-        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(1, gameZone)));//Третий игрок
-        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(gameZone, gameZone)));//Четвертый игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.get(), new Point(1, 1)));//Первый игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.get(), new Point(gameZone, 1)));//Второй игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.get(), new Point(1, gameZone)));//Третий игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.get(), new Point(gameZone, gameZone)));//Четвертый игрок
 
 
         //Заполним Box и Wall
@@ -47,9 +47,9 @@ public class GameMechanics {
                     четная i и четная j заполняется Wall, остальное Box
                     */
                 if ((i % 2 == 0) && (j % 2 == 0)) {
-                    replica.put(idGenerator.getAndIncrement(), new Wall(idGenerator.getAndIncrement(), new Point(i, j)));
+                    replica.put(idGenerator.getAndIncrement(), new Wall(idGenerator.get(), new Point(i, j)));
                 } else {
-                    replica.put(idGenerator.getAndIncrement(), new Box(idGenerator.getAndIncrement(), new Point(i, j)));
+                    replica.put(idGenerator.getAndIncrement(), new Box(idGenerator.get(), new Point(i, j)));
                 }
             }
         }
@@ -86,17 +86,17 @@ public class GameMechanics {
         Random rand = new Random();//Рандомная координата выпадающего бонуса (но в пределах gameZone)
         for (int i = 0; i <= bonusCount; i++) {
 
-            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.getAndIncrement(), new Point(rand.nextInt(gameZone - 1) + 1,
+            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.get(), new Point(rand.nextInt(gameZone - 1) + 1,
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_SPEED));
         }
 
         for (int i = 0; i <= bonusCount; i++) {
-            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.getAndIncrement(), new Point(rand.nextInt(gameZone - 1) + 1,
+            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.get(), new Point(rand.nextInt(gameZone - 1) + 1,
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_BOMB));
         }
 
         for (int i = 0; i <= bonusCount; i++) {
-            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.getAndIncrement(), new Point(rand.nextInt(gameZone - 1) + 1,
+            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.get(), new Point(rand.nextInt(gameZone - 1) + 1,
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_RANGE));
         }
 
@@ -126,7 +126,7 @@ public class GameMechanics {
         inputQueue.clear();
     }
 
-    public Map<Integer, GameObject> doMechanic(GameSession gameSession, Map<Integer, GameObject> replica) {
+    public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
@@ -169,7 +169,7 @@ public class GameMechanics {
 
                         break;
                     case BOMB:
-                        replica.put(gameSession.getInc(), new Bomb(gameSession.getId(),
+                        replica.put(idGenerator.getAndIncrement(), new Bomb(idGenerator.get(),
                                 currentPlayer.getPosition(), currentPlayer.getRangeExplosion()));
 
                     default:
@@ -222,7 +222,7 @@ public class GameMechanics {
                                             if (up) {
                                                 Point currentPoint = new Point(epicenterX, epicenterY + i * brickSize);//сместились вверх от эпицентра, в зависимости от глубины взрыва
                                                 if (mechanicsSubroutines.createExplosions(currentPoint, gameObject, replica)) {
-                                                    replica.put(gameSession.getInc(), new Explosion(gameSession.getId(), currentPoint)); //место не занято, отрисуем взрыв
+                                                    replica.put(idGenerator.getAndIncrement(), new Explosion(idGenerator.get(), currentPoint)); //место не занято, отрисуем взрыв
                                                 } else {
                                                     up = false; //взрыв был потрачен либо в стену, либо в коробку, дальше взрыв не пойдет
                                                 }
@@ -232,7 +232,7 @@ public class GameMechanics {
                                             if (down) {
                                                 Point currentPoint = new Point(epicenterX, epicenterY - i * brickSize);
                                                 if (mechanicsSubroutines.createExplosions(currentPoint, gameObject, replica)) {
-                                                    replica.put(gameSession.getInc(), new Explosion(gameSession.getId(), currentPoint));
+                                                    replica.put(idGenerator.getAndIncrement(), new Explosion(idGenerator.get(), currentPoint));
                                                 } else {
                                                     down = false;
                                                 }
@@ -242,7 +242,7 @@ public class GameMechanics {
                                             if (left) {
                                                 Point currentPoint = new Point(epicenterX - i * brickSize, epicenterY);
                                                 if (mechanicsSubroutines.createExplosions(currentPoint, gameObject, replica)) {
-                                                    replica.put(gameSession.getInc(), new Explosion(gameSession.getId(), currentPoint));
+                                                    replica.put(idGenerator.getAndIncrement(), new Explosion(idGenerator.get(), currentPoint));
                                                 } else {
                                                     left = false;
                                                 }
@@ -252,7 +252,7 @@ public class GameMechanics {
                                             if (right) {
                                                 Point currentPoint = new Point(epicenterX + i * brickSize, epicenterY);
                                                 if (mechanicsSubroutines.createExplosions(currentPoint, gameObject, replica)) {
-                                                    replica.put(gameSession.getInc(), new Explosion(gameSession.getId(), currentPoint));
+                                                    replica.put(idGenerator.getAndIncrement(), new Explosion(idGenerator.get(), currentPoint));
                                                 } else {
                                                     right = false;
                                                 }
