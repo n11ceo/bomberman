@@ -20,13 +20,15 @@ public class GameSession implements Tickable {
     private Map<Integer, GameObject> replica = new HashMap<>();
     private final int id;
     private final AtomicInteger idGenerator = new AtomicInteger(0); // У каждой сессии свой набор id
-    private  ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
+    private GameMechanics gameMechanics = new GameMechanics();
 
     public ConcurrentLinkedQueue<PlayerAction> getInputQueue() {
         return inputQueue;
     }
 
     public GameSession(int id) {
+        gameMechanics.setupGame(replica, idGenerator);
         this.id = id;
     }
 
