@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Access;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 @Controller
 @RequestMapping("/matchmaker")
 public class MmController {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(MmController.class);
     private static Integer gameId = null;
-    private static AtomicLong idGenerator = new AtomicLong();
+    private static AtomicInteger idGenerator = new AtomicInteger();
     public static final int MAX_PLAYER_IN_GAME = 4;
 
     @Autowired
@@ -69,5 +70,9 @@ public class MmController {
     public static void clear() {
         gameId = null;
         ConnectionQueue.getInstance().clear();
+    }
+
+    public static Integer getGameId() {
+        return gameId;
     }
 }
