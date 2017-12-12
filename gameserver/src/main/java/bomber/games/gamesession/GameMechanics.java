@@ -13,13 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameMechanics {
-
-
-
-
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
-
-
     //В оригинальной версии поле 16*16
     final int gameZone = 15;//0,16 - стенки
     public int playersCount = 4;//Число игроков
@@ -110,14 +104,11 @@ public class GameMechanics {
         Теперь надо окружить игровое поле непробиваемыми стенами, чтобы никто не убежал
          */
         for (int j = 1; j <= gameZone + 1; j = j + brickSize) {
-                replica.put(gameSession.getInc(), new Wall(gameSession.getId(), new Point(0, j)));
-                replica.put(gameSession.getInc(), new Wall(gameSession.getId(), new Point(gameZone+1, j)));
-                replica.put(gameSession.getInc(),new Wall(gameSession.getId(),new Point(j,0)));
-                replica.put(gameSession.getInc(),new Wall(gameSession.getId(),new Point(j,gameZone+1)));
+                replica.put(idGenerator.getAndIncrement(), new Wall(idGenerator.get(), new Point(0, j)));
+                replica.put(idGenerator.getAndIncrement(), new Wall(idGenerator.get(), new Point(gameZone+1, j)));
+                replica.put(idGenerator.getAndIncrement(),new Wall(idGenerator.get(),new Point(j,0)));
+                replica.put(idGenerator.getAndIncrement(),new Wall(idGenerator.get(),new Point(j,gameZone+1)));
         }
-
-
-        return replica;
     }
 
     public void readInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
