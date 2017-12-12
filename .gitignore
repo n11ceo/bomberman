@@ -1,9 +1,21 @@
-.gradle/
-/gradle/
-/out/
-build/
+.gradle/**
+/gradle/**
+/out/**
+build/**
+*.gradle
 
-.idea/
-/*/build/
+.idea/**
+/*/build/**
 /*/classes
 /classes
+/matchmaker/out/
+/gameserver/out/
+.idea/
+build/
+frontend/build/
+gameserver/build/
+gameserver/out/production/classes/bomber/GameServerApplication.class
+gameserver/out/production/classes/bomber/connectionhandler/
+gameserver/out/production/classes/bomber/games/
+gameserver/out/test/
+gradle/

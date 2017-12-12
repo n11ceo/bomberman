@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+
 
 @Controller
 @RequestMapping("/matchmaker")
@@ -68,5 +68,9 @@ public class MmController {
     public static void clear() {
         gameId = null;
         ConnectionQueue.getInstance().clear();
+    }
+
+    public static Integer getGameId() {
+        return gameId;
     }
 }
