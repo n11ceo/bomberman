@@ -1,4 +1,4 @@
-package bomber.gameserver.websocket;
+package bomber.gameservice.websocket;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;

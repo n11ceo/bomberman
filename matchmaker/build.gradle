@@ -19,6 +19,12 @@ configurations {
 }
 
 
+springBoot {
+	mainClass = 'bomberman.bomber.matchmaker.MatchMakerApplication'
+}
+
+
+
 sourceSets {
 	main {
 		java {

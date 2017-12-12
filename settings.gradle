@@ -3,6 +3,6 @@ rootProject.name = 'bomber'
 
 
 include 'matchmaker'
-
 include 'gameservice'
+include 'gameserver'
 
