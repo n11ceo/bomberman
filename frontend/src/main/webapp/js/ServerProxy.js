@@ -39,7 +39,10 @@ ServerProxy = Class.extend({
         $.ajax({
             contentType: 'application/x-www-form-urlencoded',
             data: {
-                "name": login
+                'name': login
+            },
+            body: {
+
             },
             dataType: 'text',
             success: function(data){
@@ -52,9 +55,9 @@ ServerProxy = Class.extend({
                 console.log("Matchmaker request failed, use default gameId=" + that.gameId);
                 that.connectToGameServer(that.gameId, login);
             },
-            processData: false,
+            processData: true,
             type: 'POST',
-            url: that.matchMakerUrl
+            url: "http://" + that.matchMakerUrl
         });
     },
 
