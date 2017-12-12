@@ -10,12 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameMechanics {
 
 
-    private Map<Integer, GameObject> replica = new HashMap<>();
-    ConcurrentLinkedQueue<PlayerAction> eventQueue = new ConcurrentLinkedQueue();
+
+
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
 
 
@@ -25,32 +26,36 @@ public class GameMechanics {
     final int brickSize = 0;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
     final int bonusCount = 4;//3*Количество бонусов, которые отспаунятся
 
-    public Map<Integer, GameObject> setupGame(GameSession gameSession) {
+    public GameMechanics() {
+    }
+
+    public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
+                                                     //by creation, arguments - replica
 
         //Создали землю, на которой будем играть
-        replica.put(gameSession.getInc(), new GameGround(gameSession.getId(), new Point(0, 0)));//для механики бесполезно, а фронтенду необходимо
+        replica.put(idGenerator.getAndIncrement(), new GameGround(idGenerator.getAndIncrement(), new Point(0, 0)));//для механики бесполезно, а фронтенду необходимо
 
         /*
         Площадкамана построили, насяльника, можно заселять игроков
         */
-        replica.put(gameSession.getInc(), new Player(gameSession.getId(), new Point(1, 1)));//Первый игрок
-        replica.put(gameSession.getInc(), new Player(gameSession.getId(), new Point(gameZone, 1)));//Второй игрок
-        replica.put(gameSession.getInc(), new Player(gameSession.getId(), new Point(1, gameZone)));//Третий игрок
-        replica.put(gameSession.getInc(), new Player(gameSession.getId(), new Point(gameZone, gameZone)));//Четвертый игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(1, 1)));//Первый игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(gameZone, 1)));//Второй игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(1, gameZone)));//Третий игрок
+        replica.put(idGenerator.getAndIncrement(), new Player(idGenerator.getAndIncrement(), new Point(gameZone, gameZone)));//Четвертый игрок
 
 
         //Заполним Box и Wall
-        for (int j = 0; j <= gameZone; j = j + brickSize) {
-            for (int i = 0; i <= gameZone; i = i + brickSize) {
+        for (int j = 1; j <= gameZone; j = j + brickSize) {
+            for (int i = 1; i <= gameZone; i = i + brickSize) {
                     /*
                     Представим нашу игровую площадку как двумерный массив. Прогуляемся по нему,
                     попутно расставляя объекты по принципу:
                     четная i и четная j заполняется Wall, остальное Box
                     */
                 if ((i % 2 == 0) && (j % 2 == 0)) {
-                    replica.put(gameSession.getInc(), new Wall(gameSession.getId(), new Point(i, j)));
+                    replica.put(idGenerator.getAndIncrement(), new Wall(idGenerator.getAndIncrement(), new Point(i, j)));
                 } else {
-                    replica.put(gameSession.getInc(), new Box(gameSession.getId(), new Point(i, j)));
+                    replica.put(idGenerator.getAndIncrement(), new Box(idGenerator.getAndIncrement(), new Point(i, j)));
                 }
             }
         }
@@ -87,35 +92,47 @@ public class GameMechanics {
         Random rand = new Random();//Рандомная координата выпадающего бонуса (но в пределах gameZone)
         for (int i = 0; i <= bonusCount; i++) {
 
-            replica.put(gameSession.getInc(), new Bonus(gameSession.getId(), new Point(rand.nextInt(gameZone - 1) + 1,
+            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.getAndIncrement(), new Point(rand.nextInt(gameZone - 1) + 1,
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_SPEED));
         }
 
         for (int i = 0; i <= bonusCount; i++) {
-            replica.put(gameSession.getInc(), new Bonus(gameSession.getId(), new Point(rand.nextInt(gameZone - 1) + 1,
+            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.getAndIncrement(), new Point(rand.nextInt(gameZone - 1) + 1,
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_BOMB));
         }
 
         for (int i = 0; i <= bonusCount; i++) {
-            replica.put(gameSession.getInc(), new Bonus(gameSession.getId(), new Point(rand.nextInt(gameZone - 1) + 1,
+            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.getAndIncrement(), new Point(rand.nextInt(gameZone - 1) + 1,
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_RANGE));
         }
+
+        /*
+        Теперь надо окружить игровое поле непробиваемыми стенами, чтобы никто не убежал
+         */
+        for (int j = 1; j <= gameZone + 1; j = j + brickSize) {
+                replica.put(gameSession.getInc(), new Wall(gameSession.getId(), new Point(0, j)));
+                replica.put(gameSession.getInc(), new Wall(gameSession.getId(), new Point(gameZone+1, j)));
+                replica.put(gameSession.getInc(),new Wall(gameSession.getId(),new Point(j,0)));
+                replica.put(gameSession.getInc(),new Wall(gameSession.getId(),new Point(j,gameZone+1)));
+        }
+
+
         return replica;
     }
 
-    public void readInputQueue() {
+    public void readInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
 
-        while (!eventQueue.isEmpty()) { //делать до тех пор пока очередь не опустеет
-            Integer playerId = eventQueue.element().getId(); //заранее узнаем id игрока, возглавляющего очередь
+        while (!inputQueue.isEmpty()) { //делать до тех пор пока очередь не опустеет
+            Integer playerId = inputQueue.element().getId(); //заранее узнаем id игрока, возглавляющего очередь
             if (!actionOnMap.containsKey(playerId)) { //если действий от этого игрока еще не было
-                actionOnMap.put(playerId, eventQueue.element());//Запишем действие в мапу
+                actionOnMap.put(playerId, inputQueue.element());//Запишем действие в мапу
             }
-            eventQueue.remove();//удаляем главу этой очереди
+            inputQueue.remove();//удаляем главу этой очереди
         }
     }
 
-    public void clearInputQueue() {
-        eventQueue.clear();
+    public void clearInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
+        inputQueue.clear();
     }
 
     public Map<Integer, GameObject> doMechanic(GameSession gameSession, Map<Integer, GameObject> replica) {

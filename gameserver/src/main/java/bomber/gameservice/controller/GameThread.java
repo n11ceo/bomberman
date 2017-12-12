@@ -1,9 +1,10 @@
-package bomber.connectionhandler;
+package bomber.gameservice.controller;
 
+import bomber.games.gamesession.GameMechanics;
 import bomber.games.gamesession.GameSession;
 import org.slf4j.LoggerFactory;
 
-import static bomber.connectionhandler.GameController.gameSessionMap;
+import static bomber.gameservice.controller.GameController.gameSessionMap;
 
 public class GameThread implements Runnable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameThread.class);
