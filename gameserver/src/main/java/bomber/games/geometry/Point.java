@@ -1,7 +1,7 @@
 package bomber.games.geometry;
 
 
-//TODO insert your implementation of geometry here
+
 public final class Point implements Collider {
     private final int x;
     private final int y;
@@ -43,5 +43,10 @@ public final class Point implements Collider {
             return this.equals(other);
         }
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x +", " + y + ")";
     }
 }

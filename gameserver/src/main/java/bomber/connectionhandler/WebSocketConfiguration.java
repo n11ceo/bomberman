@@ -1,4 +1,4 @@
-package bomber.gameservice.websocket;
+package bomber.connectionhandler;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -11,6 +11,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new EventHandler(), "/game/connect");
+        registry.addHandler(new EventHandler(), "/game/connect").setAllowedOrigins("*");
     }
 }

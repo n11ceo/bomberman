@@ -1,7 +1,5 @@
 package bomber.games.gameobject;
 
-
-import bomber.games.gamesession.GameSession;
 import bomber.games.geometry.Point;
 import bomber.games.model.Positionable;
 import org.slf4j.LoggerFactory;
@@ -13,14 +11,14 @@ public final class Bonus implements Positionable {
     private final Type type;
 
     public enum Type {
-        SPEED, BOMB, RANGE
+        BONUS_SPEED, BONUS_BOMB, BONUS_RANGE
     }
 
-    public Bonus(final Point position, final Type type) {
-        this.id = GameSession.nextId();
+    public Bonus(final int id, final Point position, final Type type) {
+        this.id = id;
         this.position = position;
         this.type = type;
-        log.info("New Bonus: id={}, position({}, {}), type={}\n", id, position.getX(), position.getY(), type);
+
     }
 
     @Override
@@ -33,4 +31,32 @@ public final class Bonus implements Positionable {
         return id;
     }
 
+    @Override
+    public int hashCode() {
+        return (int) this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else if (obj instanceof Player) {
+            Bonus bonus = (Bonus) obj;
+            return this.id == bonus.id;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Bonus: {" +
+                "\nid = " + id +
+                "\nposition = " + position +
+                "\ntype = " + type +
+                "\n}";
+    }
+
+    public Type getType() {
+        return type;
+    }
 }
