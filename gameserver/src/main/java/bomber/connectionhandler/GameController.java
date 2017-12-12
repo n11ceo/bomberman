@@ -1,15 +1,12 @@
-package bomber.gameservice.controller;
+package bomber.connectionhandler;
 
 
 import bomber.games.gamesession.GameSession;
-import bomber.games.model.GameObject;
-import bomber.games.model.Tickable;
 import bomber.games.util.GeneratorIdSession;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
