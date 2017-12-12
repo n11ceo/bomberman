@@ -18,9 +18,9 @@ public class GameThread implements Runnable {
     @Override
     public void run() {
         log.info("Start new thread called game-mechanics with gameId = " + gameId);
-        GameSession gameSession = new GameSession((int) gameId);
+//        GameSession gameSession = new GameSession((int) gameId);
         log.info("Game has been init gameId={}", gameId);
-        gameSessionMap.put(gameId, gameSession);
+//        gameSessionMap.put(gameId, gameSession);
     }
 
 }

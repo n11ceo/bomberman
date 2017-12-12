@@ -60,7 +60,9 @@ public class GameController {
             produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> start(@RequestParam("gameId") String gameIdString) {
-        long gameId = Long.parseLong(gameIdString.substring(1, gameIdString.length() - 1));
+
+//        long gameId = Long.parseLong(gameIdString.substring(1, gameIdString.length() - 1));
+        long gameId = Long.parseLong(gameIdString);
         if (!gameSessionMap.containsKey(gameId)) {
             log.error("Don't have games to run gameId={}", gameId);
             return ResponseEntity.badRequest().body("");
