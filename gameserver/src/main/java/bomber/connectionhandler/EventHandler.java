@@ -13,10 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.Thread.sleep;
 
@@ -27,12 +24,14 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
     private static final Map<WebSocketSession, Player> connectionPool = new HashMap<>();
     public static final String GAMEID_ARG = "gameId";
     public static final String NAME_ARG = "name";
+    private static final List<WebSocketSession> list = new ArrayList<>();
 
     @Override
     public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         //connected player count?
-            connectionPool.put(session, uriToPlayer(session.getUri()));
+        list.add(session);
+        connectionPool.put(session, uriToPlayer(session.getUri()));
         connectionPool.get(session).setId(session.hashCode());
     }
 
@@ -53,13 +52,16 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         super.afterConnectionClosed(session, closeStatus);
     }
 
-    public void sendReplica(final int gameId) throws IOException {
-        for (WebSocketSession session : HashMapUtil.getSessionsArrayByGameId(connectionPool, gameId))
+    public static void sendReplica(final int gameId) throws IOException {
+        /*for (WebSocketSession session : HashMapUtil.getSessionsArrayByGameId(connectionPool, gameId))
             session.sendMessage(
-                    new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
+                    new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));*/
+        for (WebSocketSession session : list) {
+            session.sendMessage(new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
+        }
     }
 
-    public void sendPossess(final int playerId) throws IOException {
+    public static void sendPossess(final int playerId) throws IOException {
         HashMapUtil.getSessionByPlayerId(connectionPool, playerId).sendMessage(
                 new TextMessage(Json.possesToJson(playerId)));
     }

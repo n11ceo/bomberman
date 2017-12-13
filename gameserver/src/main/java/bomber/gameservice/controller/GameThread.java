@@ -1,8 +1,12 @@
 package bomber.gameservice.controller;
 
-import bomber.games.gamesession.GameMechanics;
+
+import bomber.connectionhandler.EventHandler;
+import bomber.connectionhandler.json.Json;
 import bomber.games.gamesession.GameSession;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 import static bomber.gameservice.controller.GameController.gameSessionMap;
 
@@ -18,9 +22,17 @@ public class GameThread implements Runnable {
     @Override
     public void run() {
         log.info("Start new thread called game-mechanics with gameId = " + gameId);
-//        GameSession gameSession = new GameSession((int) gameId);
+        GameSession gameSession = new GameSession((int) gameId);
         log.info("Game has been init gameId={}", gameId);
-//        gameSessionMap.put(gameId, gameSession);
+        gameSessionMap.put(gameId, gameSession);
+        gameSession.setupGameMap();
+        log.info("========================================");
+        log.info(Json.replicaToJson(gameSession.getReplica()));
+        try {
+            EventHandler.sendReplica(gameSession.getId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
