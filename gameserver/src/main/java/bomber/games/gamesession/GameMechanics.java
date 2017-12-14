@@ -52,8 +52,8 @@ public class GameMechanics {
             }
         }*/
 
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(listPlayerId.get(0), new Point(brickSize, brickSize)));//Первый игрок
+
+        replica.put(listPlayerId.get(0), new Player(listPlayerId.get(0), new Point(brickSize, brickSize)));//Первый игрок
 
         try {
             EventHandler.sendPossess(listPlayerId.get(0));
@@ -87,6 +87,11 @@ public class GameMechanics {
 
     public void doMechanic(Map<Integer, GameObject> replica, ConcurrentLinkedQueue<PlayerAction> inputQueue ) {
         readInputQueue(inputQueue);
+
+        log.info("===========================");
+        for (PlayerAction playerAction : actionOnMap.values()) {
+            log.info("queue = {}", playerAction);
+        }
 
     }
 

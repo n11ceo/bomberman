@@ -61,6 +61,7 @@ public class GameSession implements Tickable {
         for (GameObject gameObject : replica.values()) {
             if (gameObject instanceof Tickable) {
                 ((Tickable) gameObject).tick(elapsed);
+
             }
         }
     }
