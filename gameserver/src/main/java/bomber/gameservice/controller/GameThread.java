@@ -30,6 +30,7 @@ public class GameThread implements Runnable {
         log.info(Json.replicaToJson(gameSession.getReplica()));
         try {
             EventHandler.sendReplica(gameSession.getId());
+       /*     EventHandler.sendPossess();*/
         } catch (IOException e) {
             e.printStackTrace();
         }

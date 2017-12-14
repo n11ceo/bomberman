@@ -14,12 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameMechanics {
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
-    //В оригинальной версии поле 16*16
-    final int gameZone_X = 17;//0,16 - стенки по X
+
+    private final int gameZone_X = 17;//0,16 - стенки по X
     private final int gameZone_Y = 13; //0,12 - стенки по Y
     public int playersCount = 4;//Число игроков
-    final int brickSize = 1;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
-    final int bonusCount = 4;//3*Количество бонусов, которые отспаунятся
+    private final int brickSize = 32;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
+    private final int bonusCount = 4;//3*Количество бонусов, которые отспаунятся
 
     public GameMechanics() {
     }
@@ -34,26 +34,14 @@ public class GameMechanics {
         /*
         Площадкамана построили, насяльника, можно заселять игроков
         */
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(1, 1)));//Первый игрок
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X, 1)));//Второй игрок
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(1, gameZone_Y)));//Третий игрок
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X, gameZone_Y)));//Четвертый игрок
 
 
+        /*//Заполним Box и Wall
+          for (int j = brickSize; j < gameZone_X * brickSize; j = j + brickSize) {
+            for (int i = brickSize; i < gameZone_Y * brickSize; i = i + brickSize) {
 
-        //Заполним Box и Wall
-        for (int j = 0; j < gameZone_X; j = j + brickSize) {
-            for (int i = 0; i < gameZone_Y; i = i + brickSize) {
-                    /*
-                    Представим нашу игровую площадку как двумерный массив. Прогуляемся по нему,
-                    попутно расставляя объекты по принципу:
-                    четная i и четная j заполняется Wall, остальное Box
-                    */
-                if ((i % 2 == 0) && (j % 2 == 0)) {
+
+                if ((i % 2*brickSize == 0) && (j % 2*brickSize == 0)) {
                     idGenerator.getAndIncrement();
                     replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(i, j)));
                 } else {
@@ -61,31 +49,35 @@ public class GameMechanics {
                     replica.put(idGenerator.get(), new Box(idGenerator.get(), new Point(i, j)));
                 }
             }
-        }
+        }*/
 
-        /*
-        Пространство вокруг игроков надо освободить, поэтому
-        ВАЖНО!!Если найдется герой, который это сделает грамотней - добро пожаловать, а пока вот так
-        (когда каждый объект лежал в отдельной мапе - такой лажи не было
-        */
+        /*for (int x = 0; x <= gameZone_X; x++) {
+            for (int y = 0; y <= gameZone_Y; y++) {
+                if (y == 0 || x == 0 || x*brickSize == (gameZone_X*brickSize - brickSize) || y*brickSize == (gameZone_Y*brickSize - brickSize)) {
+                    idGenerator.getAndIncrement();
+                    replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(x*brickSize, y*brickSize)));//Первый игрок
+                }
+                if (!(y == 0 || x == 0 || x*brickSize == (gameZone_X*brickSize - brickSize) ||
+                        y*brickSize == (gameZone_Y*brickSize - brickSize)) && ((x % 2 == 0) && (y % 2 == 0))) {
+                    idGenerator.getAndIncrement();
+                    replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(x*brickSize, y*brickSize)));//Первый игрок
+                }
+            }
+        }*/
 
-   /*     //Для первого игрока(Вверх-Влево)
-        replica.remove(1 + 5);
-        replica.remove(2 + 5);
-        replica.remove(gameZone + 1 + 5);
-        //Для второго игрока(Вверх-Вправо)
-        replica.remove(gameZone + 5);
-        replica.remove(gameZone - 1 + 5);
-        replica.remove(2 * gameZone + 5);
-        //Для третьего игрока(Вниз-Влево)
-        replica.remove(gameZone * (gameZone - 1 + 5));
-        replica.remove(gameZone * (gameZone - 1) + 1 + 5);
-        replica.remove(gameZone * (gameZone - 1) - gameZone + 5);
-        //Для четвертого игрока(Вниз-Влево)
-        replica.remove(gameZone * gameZone + 5);
-        replica.remove(gameZone * gameZone - 1 + 5);
-        replica.remove(gameZone * gameZone - gameZone + 5);
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(brickSize, brickSize)));//Первый игрок
+        /*idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, brickSize)));//Второй игрок
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(brickSize, gameZone_Y * brickSize - brickSize * 2)));//Третий игрок
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));//Четвертый игрок
+
+
 */
+
+
 
 
          /*
@@ -109,19 +101,7 @@ public class GameMechanics {
                     rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_RANGE));
         }
 */
-        /*
-        Теперь надо окружить игровое поле непробиваемыми стенами, чтобы никто не убежал
-         */
-        for (int j = 0; j < gameZone_Y; j = j + brickSize) {
-                idGenerator.getAndIncrement();
-                replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(0, j)));
-                idGenerator.getAndIncrement();
-                replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(gameZone_X - 1, j)));
-                idGenerator.getAndIncrement();
-                replica.put(idGenerator.get(),new Wall(idGenerator.get(),new Point(j,0)));
-                idGenerator.getAndIncrement();
-                replica.put(idGenerator.get(),new Wall(idGenerator.get(),new Point(j,gameZone_Y - 1)));
-        }
+
     }
 
     public void readInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
@@ -139,7 +119,7 @@ public class GameMechanics {
         inputQueue.clear();
     }
 
-   /* public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
+    public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
@@ -297,5 +277,5 @@ public class GameMechanics {
             }
         }
         return replica;
-    }*/
+    }
 }

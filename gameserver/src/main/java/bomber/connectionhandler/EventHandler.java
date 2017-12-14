@@ -79,13 +79,15 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         return player;
     }
 
-    public static Set<Integer> getSessionIdSet() {
-        Set<Integer> set = new HashSet<>();
+    public static HashSet<Integer> getSessionIdSet() {
+        HashSet<Integer> set = new HashSet<>();
         for (WebSocketSession webSocketSession : connectionPool.keySet()) {
             set.add(webSocketSession.hashCode());
         }
         return set;
     }
 
-
+    public static Map<WebSocketSession, Player> getConnectionPool() {
+        return connectionPool;
+    }
 }
