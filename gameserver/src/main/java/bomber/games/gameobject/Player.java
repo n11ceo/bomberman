@@ -26,6 +26,7 @@ public final class Player implements Movable {
         this.velocity = 1;
         this.countBomb = 1;
         this.lifeTime = 0; //надо над этим подумать
+        log.info("Create player with id = " + id);
     }
 
     @Override

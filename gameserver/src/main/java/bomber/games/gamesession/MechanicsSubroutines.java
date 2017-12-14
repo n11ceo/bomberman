@@ -17,7 +17,7 @@ public class MechanicsSubroutines {
 
         //Повторюсь, надо проверить новые координаты игроков на коллизии с другими объектами
         for (GameObject gameObject : replica.values()) {
-            if (!(gameObject.getPosition() == playerPosition) | (gameObject.getId() == playerId)) {
+            if (!(gameObject.getPosition() == playerPosition) || (gameObject.getId() == playerId)) {
                 return true;
             }
         }

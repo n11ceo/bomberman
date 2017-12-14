@@ -1,55 +1,42 @@
 package bomber.games.gamesession;
 
+import bomber.connectionhandler.EventHandler;
 import bomber.connectionhandler.PlayerAction;
 import bomber.games.gameobject.*;
 import bomber.games.geometry.Point;
 import bomber.games.model.GameObject;
 import bomber.games.model.Movable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameMechanics {
+
+    private static final Logger log = LoggerFactory.getLogger(GameMechanics.class);
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
+
 
     private final int gameZone_X = 17;//0,16 - стенки по X
     private final int gameZone_Y = 13; //0,12 - стенки по Y
     public int playersCount = 4;//Число игроков
     private final int brickSize = 32;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
     private final int bonusCount = 4;//3*Количество бонусов, которые отспаунятся
+    private final List<Integer> listPlayerId;
 
     public GameMechanics() {
+        this.listPlayerId = new ArrayList<>(EventHandler.getSessionIdList());
     }
 
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
-                                                     //by creation, arguments - replica
-
-        //Создали землю, на которой будем играть
-
-        /*replica.put(idGenerator.get(), new GameGround(idGenerator.get(), new Point(0, 0)));//для механики бесполезно, а фронтенду необходимо
-        idGenerator.getAndIncrement();*/
-        /*
-        Площадкамана построили, насяльника, можно заселять игроков
-        */
-
-
-        /*//Заполним Box и Wall
-          for (int j = brickSize; j < gameZone_X * brickSize; j = j + brickSize) {
-            for (int i = brickSize; i < gameZone_Y * brickSize; i = i + brickSize) {
-
-
-                if ((i % 2*brickSize == 0) && (j % 2*brickSize == 0)) {
-                    idGenerator.getAndIncrement();
-                    replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(i, j)));
-                } else {
-                    idGenerator.getAndIncrement();
-                    replica.put(idGenerator.get(), new Box(idGenerator.get(), new Point(i, j)));
-                }
-            }
-        }*/
 
         /*for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
@@ -66,41 +53,19 @@ public class GameMechanics {
         }*/
 
         idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(brickSize, brickSize)));//Первый игрок
+        replica.put(idGenerator.get(), new Player(listPlayerId.get(0), new Point(brickSize, brickSize)));//Первый игрок
+
+        try {
+            EventHandler.sendPossess(listPlayerId.get(0));
+        } catch (IOException e) {
+            log.error("We are unable to sendPosses");
+        }
         /*idGenerator.getAndIncrement();
         replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, brickSize)));//Второй игрок
         idGenerator.getAndIncrement();
         replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(brickSize, gameZone_Y * brickSize - brickSize * 2)));//Третий игрок
         idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));//Четвертый игрок
-
-
-*/
-
-
-
-
-         /*
-         Теперь (в итоге) бонусы
-         */
-
-       /* Random rand = new Random();//Рандомная координата выпадающего бонуса (но в пределах gameZone)
-        for (int i = 0; i <= bonusCount; i++) {
-
-            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.get(), new Point(rand.nextInt(gameZone - 1) + 1,
-                    rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_SPEED));
-        }
-
-        for (int i = 0; i <= bonusCount; i++) {
-            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.get(), new Point(rand.nextInt(gameZone - 1) + 1,
-                    rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_BOMB));
-        }
-
-        for (int i = 0; i <= bonusCount; i++) {
-            replica.put(idGenerator.getAndIncrement(), new Bonus(idGenerator.get(), new Point(rand.nextInt(gameZone - 1) + 1,
-                    rand.nextInt(gameZone - 1) + 1), Bonus.Type.BONUS_RANGE));
-        }
-*/
+        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));//Четвертый игрок*/
 
     }
 
@@ -119,7 +84,14 @@ public class GameMechanics {
         inputQueue.clear();
     }
 
-    public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
+
+    public void doMechanic(Map<Integer, GameObject> replica, ConcurrentLinkedQueue<PlayerAction> inputQueue ) {
+        readInputQueue(inputQueue);
+
+    }
+
+
+    /*public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
@@ -277,5 +249,5 @@ public class GameMechanics {
             }
         }
         return replica;
-    }
+    }*/
 }
