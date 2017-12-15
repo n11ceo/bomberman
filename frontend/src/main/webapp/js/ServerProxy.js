@@ -32,7 +32,7 @@ ServerProxy = Class.extend({
     getSessionIdFromMatchMaker: function () {
         var that = this;
         var login = $("#loginInput").val();
-        if(!login){
+        if (!login) {
             alert("Please input login");
             console.log("Empty login, retry login");
         }
@@ -41,16 +41,14 @@ ServerProxy = Class.extend({
             data: {
                 'name': login
             },
-            body: {
-
-            },
+            body: {},
             dataType: 'text',
-            success: function(data){
-                that.gameId=data;
+            success: function (data) {
+                that.gameId = data;
                 console.log("Matchmaker returned gameId=" + data);
                 that.connectToGameServer(that.gameId, login);
             },
-            error: function(){
+            error: function () {
                 alert("Matchmaker request failed, use default gameId=" + that.gameId);
                 console.log("Matchmaker request failed, use default gameId=" + that.gameId);
                 that.connectToGameServer(that.gameId, login);
@@ -58,6 +56,26 @@ ServerProxy = Class.extend({
             processData: true,
             type: 'POST',
             url: "http://" + that.matchMakerUrl
+        });
+        that.subscribeEvents();
+    },
+
+    subscribeEvents: function () {
+        var self = this;
+        gInputEngine.subscribe('up', function () {
+            self.socket.send(gMessages.move('up'))
+        });
+        gInputEngine.subscribe('down', function () {
+            self.socket.send(gMessages.move('down'))
+        });
+        gInputEngine.subscribe('left', function () {
+            self.socket.send(gMessages.move('left'))
+        });
+        gInputEngine.subscribe('right', function () {
+            self.socket.send(gMessages.move('right'))
+        });
+        gInputEngine.subscribe('bomb', function () {
+            self.socket.send(gMessages.plantBomb())
         });
     },
 
