@@ -18,7 +18,10 @@ public class GameSession {
     private final int id;
     private final AtomicInteger idGenerator = new AtomicInteger(0); // У каждой сессии свой набор id
     private ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
-    private GameMechanics gameMechanics = new GameMechanics();
+    public static final int DEFAULT_SETTING = 0;
+    public static final int MAX_PLAYER_IN_GAME = 4;
+    private GameMechanics gameMechanics = new GameMechanics(DEFAULT_SETTING, MAX_PLAYER_IN_GAME);
+
     private boolean gameOver = false;
 
     public ConcurrentLinkedQueue<PlayerAction> getInputQueue() {
@@ -32,6 +35,7 @@ public class GameSession {
 
     public void setupGameMap() {
         gameMechanics.setupGame(replica, idGenerator);
+
     }
 
     public Integer getInc() {

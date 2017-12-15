@@ -11,7 +11,7 @@ public final class Bonus implements Positionable {
     private final Type type;
 
     public enum Type {
-        BONUS_SPEED, BONUS_BOMB, BONUS_RANGE
+        bomb, speed, fire
     }
 
     public Bonus(final int id, final Point position, final Type type) {

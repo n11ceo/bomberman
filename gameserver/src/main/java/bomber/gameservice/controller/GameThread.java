@@ -56,17 +56,18 @@ public class GameThread implements Runnable {
 
 
     private void act(long elapsed) {
-        tickables.forEach(tickable -> tickable.tick(elapsed));
         try {
             EventHandler.sendReplica(gameSession.getId());
         } catch (IOException e) {
-            log.error("Error sending replica");
+            log.error("Error to send REPLICA");
         }
+        tickables.forEach(tickable -> tickable.tick(elapsed));
         if (!gameSession.getInputQueue().isEmpty()) {
             gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
-            /*gameSession.getGameMechanics().doMechanic(gameSession.getReplica());
-            gameSession.getGameMechanics().clearInputQueue(gameSession.getInputQueue());*/
+            gameSession.getGameMechanics().doMechanic(gameSession.getReplica());
+            gameSession.getGameMechanics().clearInputQueue(gameSession.getInputQueue());
         }
+
     }
 
     public long getTickNumber() {

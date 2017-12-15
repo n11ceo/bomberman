@@ -38,23 +38,21 @@ public final class Player implements Movable, Comparable {
     public Point move(Direction direction) {
         switch (direction) {
             case UP:
-                position = new Point(position.getX() * playerSize, (int) (position.getY() + velocity * time) * playerSize);
+                position = new Point(position.getX(), (int) (position.getY() + velocity * playerSize));
                 log.info("move UP");
                 break;
             case DOWN:
-                position = new Point(position.getX() * playerSize, (int) (position.getY() - velocity * time) * playerSize);
+                position = new Point(position.getX() , (int) (position.getY() - velocity * playerSize));
                 log.info("move DOWN");
-
                 break;
 
             case RIGHT:
-                position = new Point((int) (position.getX() + velocity * time) * playerSize, position.getY() * playerSize);
+                position = new Point((int) (position.getX() + velocity * playerSize), position.getY());
                 log.info("move RIGHT");
-
                 break;
 
             case LEFT:
-                position = new Point((int) (position.getX() - velocity * time) * playerSize, position.getY() * playerSize);
+                position = new Point((int) (position.getX() - velocity * playerSize) , position.getY());
                 log.info("move LEFT");
 
                 break;

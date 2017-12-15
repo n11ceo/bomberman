@@ -37,8 +37,8 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
 
         log.info(message.getPayload());
         log.info("=============================================================================");
-        GameController.getGameSession(connectionPool.get(session).getGameid()).getInputQueue()
-                .offer(Json.jsonToPlayerAction(session.hashCode(), message.getPayload()));
+        GameController.getGameSession(connectionPool.get(session.hashCode()).getGameid()).getInputQueue()
+                .add(Json.jsonToPlayerAction(session.hashCode(), message.getPayload()));
 
     }
 
@@ -47,7 +47,7 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         //connected player count?
         System.out.println("here");
         System.out.println(session.hashCode());
-        connectionPool.remove(session);
+        connectionPool.remove(session.hashCode());
 
         super.afterConnectionClosed(session, closeStatus);
     }
