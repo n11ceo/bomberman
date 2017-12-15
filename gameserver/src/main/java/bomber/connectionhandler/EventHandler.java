@@ -37,8 +37,10 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        log.info(message.getPayload());
+        log.info("=============================================================================");
         GameController.getGameSession(connectionPool.get(session).getGameid()).getInputQueue()
-                .add(Json.jsonToPlayerAction(connectionPool.get(session).getId(),message.getPayload()));
+                .offer(Json.jsonToPlayerAction(connectionPool.get(session).getId(),message.getPayload()));
 
     }
 

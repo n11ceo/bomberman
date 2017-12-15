@@ -26,7 +26,7 @@ public class GameThread implements Runnable {
         log.info("Game has been init gameId={}", gameId);
         gameSessionMap.put(gameId, gameSession);
         gameSession.setupGameMap();
-
+       /* gameSession.getGameMechanics().doMechanic(gameSession.getReplica(),gameSession.getInputQueue());*/
         log.info("========================================");
         log.info(Json.replicaToJson(gameSession.getReplica()));
         try {

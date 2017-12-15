@@ -3,6 +3,7 @@ package bomber.games.gameobject;
 
 import bomber.games.geometry.Point;
 import bomber.games.model.Movable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.LoggerFactory;
 
 
@@ -17,6 +18,8 @@ public final class Player implements Movable {
     private int rangeExplosion;
     private int countBomb;
     private final String type = "Pawn";
+    @JsonIgnore
+    private final int brickSize = 32;
 
 
     public Player(final int id, final Point position) {
@@ -34,19 +37,19 @@ public final class Player implements Movable {
 
         switch (direction) {
             case UP:
-                position = new Point(position.getX(), (int) (position.getY() + (velocity)));
+                position = new Point(position.getX() * brickSize, (int) (position.getY() + (velocity)) * brickSize);
                 tick(1L);
                 break;
             case DOWN:
-                position = new Point(position.getX(), (int) (position.getY() - (velocity)));
+                position = new Point(position.getX() * brickSize, (int) (position.getY() - (velocity)) * brickSize);
                 tick(1L);
                 break;
             case RIGHT:
-                position = new Point((int) (position.getX() + (velocity)), position.getY());
+                position = new Point((int) (position.getX() + (velocity)) * brickSize, position.getY() * brickSize);
                 tick(1L);
                 break;
             case LEFT:
-                position = new Point((int) (position.getX() - (velocity)), position.getY());
+                position = new Point((int) (position.getX() - (velocity)) * brickSize, position.getY() * brickSize);
                 tick(1L);
                 break;
             case IDLE:

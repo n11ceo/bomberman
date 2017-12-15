@@ -55,13 +55,16 @@ public class GameSession implements Tickable {
         replica.put(idGenerator.getAndIncrement(), gameObject);
     }
 
+    public GameMechanics getGameMechanics() {
+        return gameMechanics;
+    }
+
     @Override
     public void tick(long elapsed) {
         log.info("tick");
         for (GameObject gameObject : replica.values()) {
             if (gameObject instanceof Tickable) {
                 ((Tickable) gameObject).tick(elapsed);
-
             }
         }
     }
