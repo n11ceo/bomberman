@@ -21,26 +21,25 @@ import static java.lang.Thread.sleep;
 @Component
 public class EventHandler extends TextWebSocketHandler implements WebSocketHandler {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(EventHandler.class);
-    private static final Map<WebSocketSession, Player> connectionPool = new HashMap<>();
+    private static final Map<Integer, Player> connectionPool = new HashMap<>();
     public static final String GAMEID_ARG = "gameId";
     public static final String NAME_ARG = "name";
-    private static final List<WebSocketSession> list = new ArrayList<>();
 
     @Override
     public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         //connected player count?
-        list.add(session);
-        connectionPool.put(session, uriToPlayer(session.getUri()));
-        connectionPool.get(session).setId(session.hashCode());
+        connectionPool.put(session.hashCode(), uriSessionToPlayer(session.getUri(), session));  // due to realisation player
+                                                                                        //Id matches to session hashcode
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+
         log.info(message.getPayload());
         log.info("=============================================================================");
         GameController.getGameSession(connectionPool.get(session).getGameid()).getInputQueue()
-                .offer(Json.jsonToPlayerAction(connectionPool.get(session).getId(),message.getPayload()));
+                .offer(Json.jsonToPlayerAction(session.hashCode(), message.getPayload()));
 
     }
 
@@ -58,18 +57,24 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         /*for (WebSocketSession session : HashMapUtil.getSessionsArrayByGameId(connectionPool, gameId))
             session.sendMessage(
                     new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));*/
-        for (WebSocketSession session : list) {
-            session.sendMessage(new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
+        for (Integer id : connectionPool.keySet()) {
+            if (connectionPool.get(id).getGameid() == gameId) {
+                connectionPool.get(id).getWebSocketSession().sendMessage(
+                        new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
+            }
+//        for (WebSocketSession session : list) {
+//            session.sendMessage(new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
         }
     }
 
     public static void sendPossess(final int playerId) throws IOException {
-        HashMapUtil.getSessionByPlayerId(connectionPool, playerId).sendMessage(
+        connectionPool.get(playerId).getWebSocketSession().sendMessage(
                 new TextMessage(Json.possesToJson(playerId)));
     }
 
-    public static Player uriToPlayer(final URI uri) {
+    public static Player uriSessionToPlayer(final URI uri, WebSocketSession webSocketSession) {
         Player player = new Player(); //is id needed?
+        player.setWebSocketSession(webSocketSession);
         for (String iter : uri.getQuery().split("&")) {
             if (iter.contains(GAMEID_ARG) && !(iter.indexOf("=") == iter.length() - 1)) {
                 player.setGameid(Integer.parseInt(iter.substring(iter.indexOf("=") + 1, iter.length())));
@@ -83,8 +88,9 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
 
     public static List<Integer> getSessionIdList() {
         List<Integer> list = new ArrayList<>();
-        for (WebSocketSession webSocketSession : connectionPool.keySet()) {
+        for (Integer webSocketSession : connectionPool.keySet()) {
             list.add(webSocketSession.hashCode());
+
         }
         return list;
     }
