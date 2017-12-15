@@ -15,15 +15,15 @@ public final class Bomb implements Tickable, Positionable {
     private final Point position;
     private final int id;
     private int lifeTime = 300; //вообще тут знать бы сколько tick у нас происходит в одну секунду
-    private int rangeExplosion;
+    private int explosionRange;
     private final String type = "Bomb";
 
 
-    public Bomb(final int id, final Point position, final int rangeExplosion) {
+    public Bomb(final int id, final Point position, final int explosionRange) {
         this.id = id;
         this.position = position;
         this.lifeTime = 0;
-        this.rangeExplosion = rangeExplosion;
+        this.explosionRange = explosionRange;
 
         log.info("New Bomb: id={}, position({}, {})\n", id, position.getX(), position.getY());
     }
@@ -64,20 +64,20 @@ public final class Bomb implements Tickable, Positionable {
         return "\nBomb: {" +
                 "\nid = " + id +
                 "\nposition = " + position +
-                "\nrangeExplosion = " + rangeExplosion +
+                "\nrangeExplosion = " + explosionRange +
                 "\nlifeTime = " + lifeTime +
                 "\n}";
     }
 
     public void decrementLifeTime() {
-        this.lifeTime = lifeTime--;
+        --this.lifeTime;
     }
 
     public int getLifeTime() {
         return this.lifeTime;
     }
 
-    public int getRangeExplosion() {
-        return rangeExplosion;
+    public int getExplosionRange() {
+        return explosionRange;
     }
 }

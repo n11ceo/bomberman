@@ -7,6 +7,7 @@ import bomber.games.geometry.Point;
 import bomber.games.model.GameObject;
 import bomber.games.model.Movable;
 import bomber.games.model.Tickable;
+import bomber.games.util.BonusRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,11 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GameMechanics {
 
     private static final Logger log = LoggerFactory.getLogger(GameMechanics.class);
+    private static final int MAX_PLAYER_IN_GAME = 4;
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
-    public static final int BONUS_PER_PLAYER = 4;
     private final int gameZone_X = 17;//0,16 - стенки по X
     private final int gameZone_Y = 13; //0,12 - стенки по Y
-    public int playersCount;//Число игроков
+    private int playersCount;//Число игроков
     private final int brickSize = 32;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
     private final List<Integer> listPlayerId;
     private static List<List<Point>> spawnPositionsCollection = new ArrayList<>();
@@ -49,8 +50,8 @@ public class GameMechanics {
     }
 
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
-        Random random = new Random(System.currentTimeMillis());
-        Bonus.Type bonusType[] = new Bonus.Type[] {Bonus.Type.bomb, Bonus.Type.speed, Bonus.Type.fire};
+
+        BonusRandom bonusRandom = new BonusRandom(playersCount);
         for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
                 if (y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
@@ -68,20 +69,20 @@ public class GameMechanics {
                     if (!(y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
                             y * brickSize == (gameZone_Y * brickSize - brickSize))) {
                         if (!isPlayerSpawn(x, y)) {
+                            Bonus.Type bonus = bonusRandom.randomBonus();
+                            if (bonus != null) {
+                                idGenerator.getAndIncrement();
+                                replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                                        new Point(x*brickSize, y*brickSize), bonus));
+                            }
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), new Box(idGenerator.get(),
                                     new Point(x * brickSize, y * brickSize)));
-                            idGenerator.getAndIncrement();
-                            replica.put(idGenerator.get(), new Bonus(idGenerator.get(), new Point
-                                    (x * brickSize, y * brickSize), Bonus.Type.values()[random.nextInt(3)]));
                         }
                     }
                 }
             }
         }
-
-
-
         for (int i = 1; i <= playersCount; i++) {
             replica.put(listPlayerId.get(i), new Player(listPlayerId.get(i), spawnPositionsCollection.get(positionSetting).get(i)));
             registerTickable((Tickable) replica.get(listPlayerId.get(i)));
@@ -113,15 +114,6 @@ public class GameMechanics {
         return flag;
     }
 
-        /*idGenerator.getAndIncrement();
-        //Второй игрок
-        idGenerator.getAndIncrement();
-        //Третий игрок
-        idGenerator.getAndIncrement();
-        //Четвертый игрок*/
-
-
-
     public void readInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
 
         while (!inputQueue.isEmpty()) { //делать до тех пор пока очередь не опустеет
@@ -136,7 +128,8 @@ public class GameMechanics {
     }
 
     public void clearInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
-        inputQueue.clear();
+        if (!inputQueue.isEmpty())
+            inputQueue.clear();
         actionOnMap.clear();
     }
 
@@ -156,7 +149,7 @@ public class GameMechanics {
 */
 
 
-    public void doMechanic(Map<Integer, GameObject> replica) {
+    public void doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
@@ -197,9 +190,10 @@ public class GameMechanics {
                             //Если проверку не прошла, то все остается по старому
 
                             break;
-                    /*case BOMB:
-                        replica.put(idGenerator.getAndIncrement(), new Bomb(idGenerator.get(),
-                                currentPlayer.getPosition(), currentPlayer.getBombPower()));*/
+                        case BOMB:
+                            idGenerator.getAndIncrement();
+                           replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
+                                  currentPlayer.getPosition(), currentPlayer.getBombPower()));
 
                         default:
                             break;
@@ -315,6 +309,9 @@ public class GameMechanics {
         }
     }
 
+
+
+
     private List<Point> setSpawnPositions() {   //only default realisation now, may be expanded for more spawn options
         return null;
     }
@@ -331,3 +328,4 @@ public class GameMechanics {
         tickables.remove(tickable);
     }
 }
+
