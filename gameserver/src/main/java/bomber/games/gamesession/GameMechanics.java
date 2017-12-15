@@ -54,18 +54,26 @@ public class GameMechanics {
 
 
         replica.put(listPlayerId.get(0), new Player(listPlayerId.get(0), new Point(brickSize, brickSize)));//Первый игрок
-
+        replica.put(listPlayerId.get(1), new Player(listPlayerId.get(1), new Point(gameZone_X * brickSize - brickSize * 2, brickSize)));
+        replica.put(listPlayerId.get(2), new Player(listPlayerId.get(2), new Point(brickSize, gameZone_Y * brickSize - brickSize * 2)));
+        replica.put(listPlayerId.get(3), new Player(listPlayerId.get(3), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));
         try {
             EventHandler.sendPossess(listPlayerId.get(0));
+            EventHandler.sendPossess(listPlayerId.get(1));
+            EventHandler.sendPossess(listPlayerId.get(2));
+            EventHandler.sendPossess(listPlayerId.get(3));
         } catch (IOException e) {
             log.error("We are unable to sendPosses");
         }
+
+
+
         /*idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, brickSize)));//Второй игрок
+        //Второй игрок
         idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(brickSize, gameZone_Y * brickSize - brickSize * 2)));//Третий игрок
+        //Третий игрок
         idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Player(idGenerator.get(), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));//Четвертый игрок*/
+        //Четвертый игрок*/
 
     }
 
@@ -76,6 +84,8 @@ public class GameMechanics {
             if (!actionOnMap.containsKey(playerId)) { //если действий от этого игрока еще не было
                 actionOnMap.put(playerId, inputQueue.element());//Запишем действие в мапу
             }
+            log.info("Здесь будет actionOnMap");
+            log.info(actionOnMap.toString());
             inputQueue.remove();//удаляем главу этой очереди
         }
     }
@@ -85,76 +95,81 @@ public class GameMechanics {
     }
 
 
+/*
     public void doMechanic(Map<Integer, GameObject> replica, ConcurrentLinkedQueue<PlayerAction> inputQueue ) {
         readInputQueue(inputQueue);
 
+        log.info("---------------------------");
+        log.info(replica.toString());
         log.info("===========================");
         for (PlayerAction playerAction : actionOnMap.values()) {
             log.info("queue = {}", playerAction);
         }
 
     }
+*/
 
 
-    /*public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
+    public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
-
             if (gameObject instanceof Player) {
                 Player currentPlayer = ((Player) gameObject);
+                if (actionOnMap.containsKey(currentPlayer.getId())) {
+                    log.info("currentPlayerId = " + currentPlayer.getId());
+                    switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
 
-                switch (actionOnMap.get(gameObject.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
-
-                    case UP: //если идет вверх
-                        currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.UP));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
+                        case UP: //если идет вверх
+                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.UP));//задали новые координаты
+                        /*if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                        //Если проверку не прошла, то все остается по старому
-                        break;
+                        }*/
+                            //Если проверку не прошла, то все остается по старому
+                            break;
 
-                    case DOWN:
-                        currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.DOWN));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
+                        case DOWN:
+                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.DOWN));//задали новые координаты
+                        /*if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                        //Если проверку не прошла, то все остается по старому
+                        }*/
+                            //Если проверку не прошла, то все остается по старому
 
-                        break;
-                    case LEFT:
-                        currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.LEFT));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
+                            break;
+                        case LEFT:
+                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.LEFT));//задали новые координаты
+                        /*if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                        //Если проверку не прошла, то все остается по старому
+                        }*/
+                            //Если проверку не прошла, то все остается по старому
 
-                        break;
-                    case RIGHT:
-                        currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.RIGHT));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
+                            break;
+                        case RIGHT:
+                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.RIGHT));//задали новые координаты
+                       /* if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                        //Если проверку не прошла, то все остается по старому
+                        }*/
+                            //Если проверку не прошла, то все остается по старому
 
-                        break;
-                    case BOMB:
+                            break;
+                    /*case BOMB:
                         replica.put(idGenerator.getAndIncrement(), new Bomb(idGenerator.get(),
-                                currentPlayer.getPosition(), currentPlayer.getRangeExplosion()));
+                                currentPlayer.getPosition(), currentPlayer.getBombPower()));*/
 
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
                 }
-                if (!(mechanicsSubroutines.bonusCheck(currentPlayer, replica) == null)) { //если был взят бонус
+                /*if (!(mechanicsSubroutines.bonusCheck(currentPlayer, replica) == null)) { //если был взят бонус
                     Bonus getBonus = (Bonus) replica.get(mechanicsSubroutines.bonusCheck(currentPlayer, replica));
                     switch (getBonus.getType()) { //Узнаем что это за бонус
 
                         case BONUS_BOMB:
-                            currentPlayer.setCountBomb(currentPlayer.getCountBomb() + 1);
+                            currentPlayer.setMaxBombs(currentPlayer.getMaxBombs() + 1);
                             break;
 
                         case BONUS_RANGE:
-                            currentPlayer.setRangeExplosion(currentPlayer.getRangeExplosion() + 1);
+                            currentPlayer.setBombPower(currentPlayer.getBombPower() + 1);
                             break;
                         case BONUS_SPEED:
                             currentPlayer.setVelocity(currentPlayer.getVelocity() + 1); //вот тут конечно надо бы оптимизировать
@@ -163,10 +178,10 @@ public class GameMechanics {
                             break;
                     }
 
-                }
+                }*/
             }
 
-            if (gameObject instanceof Bomb) { //начинаем работать с бомбами
+            /*if (gameObject instanceof Bomb) { //начинаем работать с бомбами
                 if (!(((Bomb) gameObject).getLifeTime() == 0)) { //если эта бомба еще не взорвалась
                     ((Bomb) gameObject).decrementLifeTime(); //отнимем время до взрыва
                 } else { //если взорвалась то
@@ -185,7 +200,7 @@ public class GameMechanics {
 
                     for (GameObject boxObject : replica.values()) { //пройдем по реплике в поисках жертв
                         if ((boxObject instanceof Box) | (boxObject instanceof Wall)) { //упростим прогон, пробежавшись только по коробкам
-                            for (int i = 1; i <= ((Bomb) gameObject).getRangeExplosion(); i++) { //надо узнать силу взрыва
+                            for (int i = 1; i <= ((Bomb) gameObject).getBombPower(); i++) { //надо узнать силу взрыва
                                 for (int j = 1; j <= 4; j++) { //взрыв на все 4 стороны
                                     switch (j) {
                                         case 1: //если идет вверх
@@ -251,8 +266,8 @@ public class GameMechanics {
                         }
                     }
                 }
-            }
+            }*/
         }
         return replica;
-    }*/
+    }
 }
