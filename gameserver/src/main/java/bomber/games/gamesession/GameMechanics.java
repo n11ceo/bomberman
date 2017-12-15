@@ -128,7 +128,8 @@ public class GameMechanics {
     }
 
     public void clearInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
-        inputQueue.clear();
+        if (!inputQueue.isEmpty())
+            inputQueue.clear();
         actionOnMap.clear();
     }
 
@@ -148,7 +149,7 @@ public class GameMechanics {
 */
 
 
-    public void doMechanic(Map<Integer, GameObject> replica) {
+    public void doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
@@ -189,9 +190,10 @@ public class GameMechanics {
                             //Если проверку не прошла, то все остается по старому
 
                             break;
-                    /*case BOMB:
-                        replica.put(idGenerator.getAndIncrement(), new Bomb(idGenerator.get(),
-                                currentPlayer.getPosition(), currentPlayer.getBombPower()));*/
+                        case BOMB:
+                            idGenerator.getAndIncrement();
+                           replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
+                                  currentPlayer.getPosition(), currentPlayer.getBombPower()));
 
                         default:
                             break;

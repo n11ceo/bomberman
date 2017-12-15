@@ -35,6 +35,11 @@ public class GameThread implements Runnable {
         log.info("Game has been init gameId={}", gameId);
         gameSession.setupGameMap();
         gameSessionMap.put(gameId, gameSession);
+        try {
+            EventHandler.sendReplica(gameSession.getId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         while (!Thread.currentThread().isInterrupted() || !gameSession.isGameOver()) {
             log.info("========================================");
             log.info(Json.replicaToJson(gameSession.getReplica()));
@@ -56,16 +61,16 @@ public class GameThread implements Runnable {
 
 
     private void act(long elapsed) {
-        try {
-            EventHandler.sendReplica(gameSession.getId());
-        } catch (IOException e) {
-            log.error("Error to send REPLICA");
-        }
         tickables.forEach(tickable -> tickable.tick(elapsed));
         if (!gameSession.getInputQueue().isEmpty()) {
             gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
-            gameSession.getGameMechanics().doMechanic(gameSession.getReplica());
             gameSession.getGameMechanics().clearInputQueue(gameSession.getInputQueue());
+            gameSession.getGameMechanics().doMechanic(gameSession.getReplica(), gameSession.getIdGenerator());
+        }
+        try {
+            EventHandler.sendReplica(gameSession.getId());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
