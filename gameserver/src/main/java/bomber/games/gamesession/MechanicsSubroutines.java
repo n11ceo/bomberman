@@ -9,12 +9,14 @@ import java.util.Map;
 public class MechanicsSubroutines {
 
     public boolean collisionCheck(GameObject currentPlayer, Map<Integer, GameObject> replica) {
-
+        final int brickSize = 32;
+        final int playerSize = 27;
 
         //Узнаем всё о переданном нам новом экземпляре игрока
         int playerId = currentPlayer.getId();
-        Point playerPosition = currentPlayer.getPosition();
-
+        Point playerPosition  = currentPlayer.getPosition();
+        int position_X = playerPosition.getX() * playerSize;
+        int position_Y = playerPosition.getY() * playerSize;
         //Повторюсь, надо проверить новые координаты игроков на коллизии с другими объектами
         for (GameObject gameObject : replica.values()) {
             if (!(gameObject.getPosition() == playerPosition) || (gameObject.getId() == playerId)) {

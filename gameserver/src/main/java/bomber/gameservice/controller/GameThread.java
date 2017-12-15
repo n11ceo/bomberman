@@ -2,21 +2,27 @@ package bomber.gameservice.controller;
 
 
 import bomber.connectionhandler.EventHandler;
-import bomber.connectionhandler.PlayerAction;
 import bomber.connectionhandler.json.Json;
-import bomber.games.gameobject.Player;
 import bomber.games.gamesession.GameSession;
+import bomber.games.model.Tickable;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.management.PlatformLoggingMXBean;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 import static bomber.gameservice.controller.GameController.gameSessionMap;
 
 public class GameThread implements Runnable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameThread.class);
     private final long gameId;
-
+    private static final int FPS = 60;
+    private static final long FRAME_TIME = 1000 / FPS;
+    private Set<Tickable> tickables = new ConcurrentSkipListSet<>();
+    private long tickNumber = 0;
+    private GameSession gameSession;
 
     public GameThread(final long gameId) {
         this.gameId = gameId;
@@ -25,29 +31,47 @@ public class GameThread implements Runnable {
     @Override
     public void run() {
         log.info("Start new thread called game-mechanics with gameId = " + gameId);
-        GameSession gameSession = new GameSession((int) gameId);
+        gameSession = new GameSession((int) gameId, tickables);
         log.info("Game has been init gameId={}", gameId);
         gameSession.setupGameMap();
         gameSessionMap.put(gameId, gameSession);
         while (!Thread.currentThread().isInterrupted() || !gameSession.isGameOver()) {
             log.info("========================================");
             log.info(Json.replicaToJson(gameSession.getReplica()));
-            try {
-                Thread.currentThread().sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            long started = System.currentTimeMillis();
+            act(FRAME_TIME);
+            long elapsed = System.currentTimeMillis() - started;
+            if (elapsed < FRAME_TIME) {
+                log.info("All tick finish at {} ms", elapsed);
+                LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(FRAME_TIME - elapsed));
+            } else {
+                log.warn("tick lag {} ms", elapsed - FRAME_TIME);
             }
-            try {
-                EventHandler.sendReplica(gameSession.getId());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            log.info("{}: tick ", tickNumber);
+            tickNumber++;
 
-            if (!gameSession.getInputQueue().isEmpty()) {
-                gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
-                gameSession.getGameMechanics().doMechanic(gameSession.getReplica());
-            }
         }
+    }
+
+
+
+    private void act(long elapsed) {
+        try {
+            EventHandler.sendReplica(gameSession.getId());
+        } catch (IOException e) {
+            log.error("Error to send REPLICA");
+        }
+        tickables.forEach(tickable -> tickable.tick(elapsed));
+        if (!gameSession.getInputQueue().isEmpty()) {
+            gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
+            gameSession.getGameMechanics().doMechanic(gameSession.getReplica());
+            gameSession.getGameMechanics().clearInputQueue(gameSession.getInputQueue());
+        }
+
+    }
+
+    public long getTickNumber() {
+        return tickNumber;
     }
 
 }
