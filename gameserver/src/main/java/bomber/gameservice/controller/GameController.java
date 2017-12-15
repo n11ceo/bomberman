@@ -85,7 +85,7 @@ public class GameController {
             GeneratorIdSession.getAndIncrementId();
             gameId = GeneratorIdSession.getIdGenerator();
         }
-        gameSessionMap.put(gameId, new GameSession(0));
+        gameSessionMap.put(gameId, new GameSession(0, null));
         return gameId;
     }
 

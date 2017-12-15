@@ -6,15 +6,14 @@ import bomber.games.gameobject.*;
 import bomber.games.geometry.Point;
 import bomber.games.model.GameObject;
 import bomber.games.model.Movable;
+import bomber.games.model.Tickable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.rmi.MarshalledObject;
+import java.util.*;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,6 +22,7 @@ public class GameMechanics {
 
     private static final Logger log = LoggerFactory.getLogger(GameMechanics.class);
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
+    private Set<Tickable> tickables;
 
 
     private final int gameZone_X = 17;//0,16 - стенки по X
@@ -67,6 +67,13 @@ public class GameMechanics {
         replica.put(listPlayerId.get(1), new Player(listPlayerId.get(1), new Point(gameZone_X * brickSize - brickSize * 2, brickSize)));
         replica.put(listPlayerId.get(2), new Player(listPlayerId.get(2), new Point(brickSize, gameZone_Y * brickSize - brickSize * 2)));
         replica.put(listPlayerId.get(3), new Player(listPlayerId.get(3), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));
+        registerTickable((Tickable) replica.get(listPlayerId.get(0)));
+        registerTickable((Tickable) replica.get(listPlayerId.get(1)));
+        registerTickable((Tickable) replica.get(listPlayerId.get(2)));
+        registerTickable((Tickable) replica.get(listPlayerId.get(3)));
+
+
+
         try {
             EventHandler.sendPossess(listPlayerId.get(0));
             EventHandler.sendPossess(listPlayerId.get(1));
@@ -102,6 +109,7 @@ public class GameMechanics {
 
     public void clearInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
         inputQueue.clear();
+        actionOnMap.clear();
     }
 
 
@@ -120,7 +128,7 @@ public class GameMechanics {
 */
 
 
-    public Map<Integer, GameObject> doMechanic(Map<Integer, GameObject> replica) {
+    public void doMechanic(Map<Integer, GameObject> replica) {
 
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
@@ -129,9 +137,8 @@ public class GameMechanics {
                 if (actionOnMap.containsKey(currentPlayer.getId())) {
                     log.info("currentPlayerId = " + currentPlayer.getId());
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
-
                         case UP: //если идет вверх
-                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.UP));//задали новые координаты
+                            currentPlayer.move(Movable.Direction.UP);//задали новые координаты
                         /*if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
                         }*/
@@ -139,7 +146,7 @@ public class GameMechanics {
                             break;
 
                         case DOWN:
-                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.DOWN));//задали новые координаты
+                            currentPlayer.move(Movable.Direction.DOWN);//задали новые координаты
                         /*if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
                         }*/
@@ -147,7 +154,7 @@ public class GameMechanics {
 
                             break;
                         case LEFT:
-                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.LEFT));//задали новые координаты
+                            currentPlayer.move(Movable.Direction.LEFT);//задали новые координаты
                         /*if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
                         }*/
@@ -155,7 +162,7 @@ public class GameMechanics {
 
                             break;
                         case RIGHT:
-                            currentPlayer.setPosition(((Player) gameObject).move(Movable.Direction.RIGHT));//задали новые координаты
+                            currentPlayer.move(Movable.Direction.RIGHT);//задали новые координаты
                        /* if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
                             replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
                         }*/
@@ -278,10 +285,21 @@ public class GameMechanics {
                 }
             }*/
         }
-        return replica;
     }
 
     private List<Point> setSpawnPositions() {   //only default realisation now, may be expanded for more spawn options
         return null;
+    }
+
+    public void setTickables(Set<Tickable> tickables) {
+        this.tickables = tickables;
+    }
+
+    public  void registerTickable(Tickable tickable) {
+        tickables.add(tickable);
+    }
+
+    public void unregisterTickable(Tickable tickable) {
+        tickables.remove(tickable);
     }
 }

@@ -4,63 +4,73 @@ package bomber.games.gameobject;
 import bomber.games.geometry.Point;
 import bomber.games.model.Movable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
+import sun.plugin2.main.client.PluginEmbeddedFrame;
 
 
-public final class Player implements Movable {
+public final class Player implements Movable, Comparable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Player.class);
 
 
     private Point position;
     private final int id;
-    private long lifeTime;
-    private int velocity;
+    private double velocity;
     private int bombPower;
     private int maxBombs;
     private final String type = "Pawn";
     @JsonIgnore
     private final int playerSize = 27;
-
+    @JsonIgnore
+    private long time;
 
     public Player(final int id, final Point position) {
         this.id = id;
         this.position = position;
         this.bombPower = 1;
-        this.velocity = 1;
+        this.velocity = 0.05;
         this.maxBombs = 1;
-        this.lifeTime = 0; //надо над этим подумать
         log.info("Create player with id = " + id);
     }
 
     @Override
     public Point move(Direction direction) {
-
         switch (direction) {
             case UP:
-                position = new Point(position.getX() * playerSize, (int) (position.getY() + (velocity)) * playerSize);
-                tick(1L);
+                position = new Point(position.getX() * playerSize, (int) (position.getY() + velocity * time) * playerSize);
+                log.info("move UP");
                 break;
             case DOWN:
-                position = new Point(position.getX() * playerSize, (int) (position.getY() - (velocity)) * playerSize);
-                tick(1L);
+                position = new Point(position.getX() * playerSize, (int) (position.getY() - velocity * time) * playerSize);
+                log.info("move DOWN");
+
                 break;
+
             case RIGHT:
-                position = new Point((int) (position.getX() + (velocity)) * playerSize, position.getY() * playerSize);
-                tick(1L);
+                position = new Point((int) (position.getX() + velocity * time) * playerSize, position.getY() * playerSize);
+                log.info("move RIGHT");
+
                 break;
+
             case LEFT:
-                position = new Point((int) (position.getX() - (velocity)) * playerSize, position.getY() * playerSize);
-                tick(1L);
+                position = new Point((int) (position.getX() - velocity * time) * playerSize, position.getY() * playerSize);
+                log.info("move LEFT");
+
                 break;
+
             case IDLE:
-                tick(1L);
+                log.info("don't move, only IDLE");
                 break;
+
             default:
                 break;
         }
-
         return position;
     }
+
+
+
 
     @Override
     public int getId() {
@@ -79,7 +89,8 @@ public final class Player implements Movable {
 
     @Override
     public void tick(long elapsed) {
-        lifeTime += elapsed;
+        time = elapsed;
+
     }
 
     public int getBombPower() {
@@ -95,23 +106,21 @@ public final class Player implements Movable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        else
-        if (obj instanceof Player) {
+        else if (obj instanceof Player) {
             Player player = (Player) obj;
-            return this.id ==  player.id;
+            return this.id == player.id;
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "Player: {" +
+        return "\nPlayer: {" +
                 "\nid = " + id +
                 "\nposition = " + position +
                 "\nbombPower = " + bombPower +
                 "\nvelocity = " + velocity +
                 "\nmaxBombs = " + maxBombs +
-                "\nlifeTime = " + lifeTime +
                 "\n}";
     }
 
@@ -119,7 +128,7 @@ public final class Player implements Movable {
         return maxBombs;
     }
 
-    public int getVelocity() {
+    public double getVelocity() {
         return velocity;
     }
 
@@ -133,5 +142,18 @@ public final class Player implements Movable {
 
     public void setBombPower(int bombPower) {
         this.bombPower = bombPower;
+    }
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+
+        Player player = (Player) o;
+        if (this.id == player.id)
+            return 0;
+        else if (this.id > player.id)
+            return 1;
+        else
+            return -1;
+
     }
 }
