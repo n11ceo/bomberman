@@ -21,7 +21,8 @@ public class GameSession implements Tickable {
     private final int id;
     private final AtomicInteger idGenerator = new AtomicInteger(0); // У каждой сессии свой набор id
     private ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
-    private GameMechanics gameMechanics = new GameMechanics();
+    public static final int DEFAULT_SETTING = 0;
+    private GameMechanics gameMechanics = new GameMechanics(DEFAULT_SETTING);
     private boolean gameOver = false;
 
     public ConcurrentLinkedQueue<PlayerAction> getInputQueue() {

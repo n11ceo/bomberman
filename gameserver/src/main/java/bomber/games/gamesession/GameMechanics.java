@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GameMechanics {
 
     private static final Logger log = LoggerFactory.getLogger(GameMechanics.class);
+    private static final int MAX_PLAYER_IN_GAME = 4;
     private Map<Integer, PlayerAction> actionOnMap = new HashMap<>();
 
 
@@ -31,13 +32,22 @@ public class GameMechanics {
     private final int brickSize = 32;//в будущем, когда будет накладываться на это дело фронтенд, это пригодится
     private final int bonusCount = 4;//3*Количество бонусов, которые отспаунятся
     private final List<Integer> listPlayerId;
+    private static List<List<Point>> spawnPositionsCollection = new ArrayList<>();
+    private int positionSetting;  //choose which spawn positions will be applied
 
-    public GameMechanics() {
+    public GameMechanics(int positionSetting) {
+        this.positionSetting = positionSetting;
         this.listPlayerId = new ArrayList<>(EventHandler.getSessionIdList());
+        List<Point> defaultPositions = new ArrayList<>();
+        defaultPositions.add(null);
+        defaultPositions.add(new Point(brickSize, brickSize));
+        defaultPositions.add(new Point(gameZone_X * brickSize - brickSize * 2, brickSize));
+        defaultPositions.add(new Point(brickSize, gameZone_Y * brickSize - brickSize * 2));
+        defaultPositions.add(new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2));
+        spawnPositionsCollection.add(new ArrayList<Point>(defaultPositions));
     }
 
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
-
 
         for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
@@ -54,19 +64,22 @@ public class GameMechanics {
                             new Point(x * brickSize, y * brickSize)));//Первый игрок
                 } else {
                     if (!(y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
-                            y * brickSize == (gameZone_Y * brickSize - brickSize)))
-                        idGenerator.getAndIncrement();
-                    replica.put(idGenerator.get(), new Box(idGenerator.get(),
-                            new Point(x * brickSize, y * brickSize)));//Первый игрок
+                            y * brickSize == (gameZone_Y * brickSize - brickSize))) {
+                        if (!collisionOnCreatingBox(x, y)) {
+                            idGenerator.getAndIncrement();
+                            replica.put(idGenerator.get(), new Box(idGenerator.get(),
+                                    new Point(x * brickSize, y * brickSize)));//Первый игрок
+                        }
+                    }
                 }
             }
         }
 
 
-        replica.put(listPlayerId.get(0), new Player(listPlayerId.get(0), new Point(brickSize, brickSize)));//Первый игрок
-        replica.put(listPlayerId.get(1), new Player(listPlayerId.get(1), new Point(gameZone_X * brickSize - brickSize * 2, brickSize)));
-        replica.put(listPlayerId.get(2), new Player(listPlayerId.get(2), new Point(brickSize, gameZone_Y * brickSize - brickSize * 2)));
-        replica.put(listPlayerId.get(3), new Player(listPlayerId.get(3), new Point(gameZone_X * brickSize - brickSize * 2, gameZone_Y * brickSize - brickSize * 2)));
+        replica.put(listPlayerId.get(0), new Player(listPlayerId.get(0), spawnPositionsCollection.get(positionSetting).get(1)));//Первый игрок
+        replica.put(listPlayerId.get(1), new Player(listPlayerId.get(1), spawnPositionsCollection.get(positionSetting).get(2)));
+        replica.put(listPlayerId.get(2), new Player(listPlayerId.get(2), spawnPositionsCollection.get(positionSetting).get(3)));
+        replica.put(listPlayerId.get(3), new Player(listPlayerId.get(3), spawnPositionsCollection.get(positionSetting).get(4)));
         try {
             EventHandler.sendPossess(listPlayerId.get(0));
             EventHandler.sendPossess(listPlayerId.get(1));
@@ -76,15 +89,26 @@ public class GameMechanics {
             log.error("We are unable to sendPosses");
         }
 
+    }
 
-
-        /*idGenerator.getAndIncrement();
-        //Второй игрок
-        idGenerator.getAndIncrement();
-        //Третий игрок
-        idGenerator.getAndIncrement();
-        //Четвертый игрок*/
-
+    private boolean collisionOnCreatingBox(int x, int y) {
+        boolean flag = false;
+        for (int i = 1; i <= MAX_PLAYER_IN_GAME; i++) {
+            Point playerPoint = new Point(spawnPositionsCollection.get(positionSetting).get(i).getX(),
+                    spawnPositionsCollection.get(positionSetting).get(i).getY());
+            Point currentPoint = new Point(x*brickSize, y*brickSize);
+            if (playerPoint.equals(currentPoint))
+                flag = true;
+            if (new Point(playerPoint.getX() + brickSize, playerPoint.getY()).equals(currentPoint))
+                flag = true;
+            if (new Point(playerPoint.getX(), playerPoint.getY() + brickSize).equals(currentPoint))
+                flag = true;
+            if (new Point(playerPoint.getX() - brickSize, playerPoint.getY()).equals(currentPoint))
+                flag = true;
+            if (new Point(playerPoint.getX(), playerPoint.getY() - brickSize).equals(currentPoint))
+                flag = true;
+        }
+        return flag;
     }
 
     public void readInputQueue(ConcurrentLinkedQueue<PlayerAction> inputQueue) {
@@ -281,7 +305,5 @@ public class GameMechanics {
         return replica;
     }
 
-    private List<Point> setSpawnPositions() {   //only default realisation now, may be expanded for more spawn options
-        return null;
-    }
+
 }
