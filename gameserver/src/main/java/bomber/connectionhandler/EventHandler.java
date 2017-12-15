@@ -1,7 +1,6 @@
 package bomber.connectionhandler;
 
 import bomber.connectionhandler.json.Json;
-import bomber.games.util.HashMapUtil;
 import bomber.gameservice.controller.GameController;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
     public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         //connected player count?
-        connectionPool.put(session.hashCode(), uriSessionToPlayer(session.getUri(), session));  // due to realisation player
+        connectionPool.put(session.hashCode(), uriSessionToPlayer(session.getUri(), session));//due to realisation player
                                                                                         //Id matches to session hashcode
     }
 
@@ -95,7 +94,7 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         return list;
     }
 
-    public static Map<WebSocketSession, Player> getConnectionPool() {
+    public static Map<Integer, Player> getConnectionPool() {
         return connectionPool;
     }
 }

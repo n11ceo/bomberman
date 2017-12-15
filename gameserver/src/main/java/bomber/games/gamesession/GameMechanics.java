@@ -38,19 +38,29 @@ public class GameMechanics {
 
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
 
-        /*for (int x = 0; x <= gameZone_X; x++) {
+
+        for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
-                if (y == 0 || x == 0 || x*brickSize == (gameZone_X*brickSize - brickSize) || y*brickSize == (gameZone_Y*brickSize - brickSize)) {
+                if (y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
+                        y * brickSize == (gameZone_Y * brickSize - brickSize)) {
                     idGenerator.getAndIncrement();
-                    replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(x*brickSize, y*brickSize)));//Первый игрок
+                    replica.put(idGenerator.get(), new Wall(idGenerator.get(),
+                            new Point(x * brickSize, y * brickSize)));
                 }
-                if (!(y == 0 || x == 0 || x*brickSize == (gameZone_X*brickSize - brickSize) ||
-                        y*brickSize == (gameZone_Y*brickSize - brickSize)) && ((x % 2 == 0) && (y % 2 == 0))) {
+                if (!(y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
+                        y * brickSize == (gameZone_Y * brickSize - brickSize)) && ((x % 2 == 0) && (y % 2 == 0))) {
                     idGenerator.getAndIncrement();
-                    replica.put(idGenerator.get(), new Wall(idGenerator.get(), new Point(x*brickSize, y*brickSize)));//Первый игрок
+                    replica.put(idGenerator.get(), new Wall(idGenerator.get(),
+                            new Point(x * brickSize, y * brickSize)));//Первый игрок
+                } else {
+                    if (!(y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
+                            y * brickSize == (gameZone_Y * brickSize - brickSize)))
+                        idGenerator.getAndIncrement();
+                    replica.put(idGenerator.get(), new Box(idGenerator.get(),
+                            new Point(x * brickSize, y * brickSize)));//Первый игрок
                 }
             }
-        }*/
+        }
 
 
         replica.put(listPlayerId.get(0), new Player(listPlayerId.get(0), new Point(brickSize, brickSize)));//Первый игрок
@@ -269,5 +279,9 @@ public class GameMechanics {
             }*/
         }
         return replica;
+    }
+
+    private List<Point> setSpawnPositions() {   //only default realisation now, may be expanded for more spawn options
+        return null;
     }
 }
