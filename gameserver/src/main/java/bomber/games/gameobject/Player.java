@@ -3,6 +3,7 @@ package bomber.games.gameobject;
 
 import bomber.games.geometry.Point;
 import bomber.games.model.Movable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.LoggerFactory;
 
 
@@ -14,18 +15,21 @@ public final class Player implements Movable {
     private final int id;
     private long lifeTime;
     private int velocity;
-    private int rangeExplosion;
-    private int countBomb;
+    private int bombPower;
+    private int maxBombs;
     private final String type = "Pawn";
+    @JsonIgnore
+    private final int playerSize = 27;
 
 
     public Player(final int id, final Point position) {
         this.id = id;
         this.position = position;
-        this.rangeExplosion = 1;
+        this.bombPower = 1;
         this.velocity = 1;
-        this.countBomb = 1;
+        this.maxBombs = 1;
         this.lifeTime = 0; //надо над этим подумать
+        log.info("Create player with id = " + id);
     }
 
     @Override
@@ -33,19 +37,19 @@ public final class Player implements Movable {
 
         switch (direction) {
             case UP:
-                position = new Point(position.getX(), (int) (position.getY() + (velocity)));
+                position = new Point(position.getX() * playerSize, (int) (position.getY() + (velocity)) * playerSize);
                 tick(1L);
                 break;
             case DOWN:
-                position = new Point(position.getX(), (int) (position.getY() - (velocity)));
+                position = new Point(position.getX() * playerSize, (int) (position.getY() - (velocity)) * playerSize);
                 tick(1L);
                 break;
             case RIGHT:
-                position = new Point((int) (position.getX() + (velocity)), position.getY());
+                position = new Point((int) (position.getX() + (velocity)) * playerSize, position.getY() * playerSize);
                 tick(1L);
                 break;
             case LEFT:
-                position = new Point((int) (position.getX() - (velocity)), position.getY());
+                position = new Point((int) (position.getX() - (velocity)) * playerSize, position.getY() * playerSize);
                 tick(1L);
                 break;
             case IDLE:
@@ -78,8 +82,8 @@ public final class Player implements Movable {
         lifeTime += elapsed;
     }
 
-    public int getRangeExplosion() {
-        return rangeExplosion;
+    public int getBombPower() {
+        return bombPower;
     }
 
     @Override
@@ -104,15 +108,15 @@ public final class Player implements Movable {
         return "Player: {" +
                 "\nid = " + id +
                 "\nposition = " + position +
-                "\nrangeExplosion = " + rangeExplosion +
+                "\nbombPower = " + bombPower +
                 "\nvelocity = " + velocity +
-                "\ncountBomb = " + countBomb +
+                "\nmaxBombs = " + maxBombs +
                 "\nlifeTime = " + lifeTime +
                 "\n}";
     }
 
-    public int getCountBomb() {
-        return countBomb;
+    public int getMaxBombs() {
+        return maxBombs;
     }
 
     public int getVelocity() {
@@ -123,11 +127,11 @@ public final class Player implements Movable {
         this.velocity = velocity;
     }
 
-    public void setCountBomb(int countBomb) {
-        this.countBomb = countBomb;
+    public void setMaxBombs(int maxBombs) {
+        this.maxBombs = maxBombs;
     }
 
-    public void setRangeExplosion(int rangeExplosion) {
-        this.rangeExplosion = rangeExplosion;
+    public void setBombPower(int bombPower) {
+        this.bombPower = bombPower;
     }
 }

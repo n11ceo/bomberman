@@ -35,8 +35,11 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        GameController.getGameSession(connectionPool.get(session.hashCode()).getGameid()).getInputQueue()
-                .add(Json.jsonToPlayerAction(session.hashCode(), message.getPayload()));
+
+        log.info(message.getPayload());
+        log.info("=============================================================================");
+        GameController.getGameSession(connectionPool.get(session).getGameid()).getInputQueue()
+                .offer(Json.jsonToPlayerAction(session.hashCode(), message.getPayload()));
 
     }
 
@@ -83,13 +86,16 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
         return player;
     }
 
-    public static Set<Integer> getSessionIdSet() {
-        Set<Integer> set = new HashSet<>();
-        for (Player player : connectionPool.values()) {
-            set.add(player.getWebSocketSession().hashCode());
+    public static List<Integer> getSessionIdList() {
+        List<Integer> list = new ArrayList<>();
+        for (Integer webSocketSession : connectionPool.keySet()) {
+            list.add(webSocketSession.hashCode());
+
         }
-        return set;
+        return list;
     }
 
-
+    public static Map<WebSocketSession, Player> getConnectionPool() {
+        return connectionPool;
+    }
 }
