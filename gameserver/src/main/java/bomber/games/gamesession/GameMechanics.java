@@ -155,39 +155,46 @@ public class GameMechanics {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
             if (gameObject instanceof Player) {
                 Player currentPlayer = ((Player) gameObject);
+                Point previosPos = currentPlayer.getPosition();
                 if (actionOnMap.containsKey(currentPlayer.getId())) {
                     log.info("currentPlayerId = " + currentPlayer.getId());
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
                         case UP: //если идет вверх
-                           currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
-                            replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
+
+                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));//задали новые координаты
+
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(previosPos);
                         }
-                            //Если проверку не прошла, то все остается по старому
+
+
                             break;
 
                         case DOWN:
+
                             currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
-                            replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                            //Если проверку не прошла, то все остается по старому
+
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(previosPos);
+                            }
 
                             break;
                         case LEFT:
+
                             currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
-                            replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                            //Если проверку не прошла, то все остается по старому
+
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(previosPos);
+                            }
 
                             break;
                         case RIGHT:
-                            currentPlayer.move(Movable.Direction.RIGHT);//задали новые координаты
-                        if (mechanicsSubroutines.collisionCheck(gameObject, replica)) {//Если никуда не врезается, то
-                            replica.replace(gameObject.getId(), currentPlayer);//перемещаем игрока
-                        }
-                            //Если проверку не прошла, то все остается по старому
+
+                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));//задали новые координаты
+
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(previosPos);
+                            }
 
                             break;
                         case BOMB:
