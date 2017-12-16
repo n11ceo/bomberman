@@ -62,7 +62,7 @@ public class GameMechanics {
         replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
                 new Point(2 * brickSize, brickSize), Bonus.Type.Bonus_Bomb));
 
-       /* BonusRandom bonusRandom = new BonusRandom(playersCount);
+        BonusRandom bonusRandom = new BonusRandom(playersCount);
 
         for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
@@ -94,7 +94,7 @@ public class GameMechanics {
                     }
                 }
             }
-        }*/
+        }
         for (int i = 1; i <= playersCount; i++) {
             replica.put(listPlayerId.get(i), new Player(listPlayerId.get(i), spawnPositionsCollection.get(positionSetting).get(i)));
             registerTickable((Tickable) replica.get(listPlayerId.get(i)));
@@ -221,8 +221,8 @@ public class GameMechanics {
                 }
             }
 
-            if (gameObject instanceof Bomb) { //начинаем работать с бомбами
-                if (!((Bomb) gameObject).getIsAlive()) { //если эта бомба еще не взорвалась
+            if (gameObject instanceof Bomb ) { //начинаем работать с бомбами
+                if (!((Bomb) gameObject).isAlive()) { //если эта бомба еще не взорвалась
 
                     Bomb currentBomb = (Bomb) gameObject;
                     log.info("Удаляем бомбу");
@@ -302,22 +302,13 @@ public class GameMechanics {
                 }
 
             }
-
-            /*
-            if (gameObject instanceof Explosion) { //Найдем тех, кого в итоге убило ^__^ ну и протикаем продолжительность взрыва
-                if (((Explosion) gameObject).getLifeTime() == 0) { //если время закончилось
-                    replica.remove(gameObject.getId());//удалим его
-                } else { //если взрыв еще держится
-                    ((Explosion) gameObject).decrementLifeTime(); //отнимем время до взрыва
-
-
-                    for (GameObject playerObject : replica.values()) { //Далее охотимся на игроков
-                        if (playerObject instanceof Player) {
-                            mechanicsSubroutines.youDied(replica, ((Player) playerObject), ((Explosion) gameObject));
-                        }
-                    }
+            if (gameObject instanceof Explosion ) { //убираем Explosion с карты
+                if (!((Explosion) gameObject).isAlive()) {
+                    replica.remove(gameObject.getId());
+                } else {
+                    mechanicsSubroutines.youDied(replica, (Explosion) gameObject);
                 }
-            }*/
+            }
         }
     }
 

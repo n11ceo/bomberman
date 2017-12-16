@@ -24,11 +24,9 @@ public final class Bomb implements Tickable, Positionable, Comparable {
     @JsonIgnore
     boolean isNewBombStillCollide = true;
     @JsonIgnore
-    private boolean isAlive = true;
+    private boolean alive = true;
 
-    public boolean getIsAlive() {
-        return isAlive;
-    }
+
 
 
 
@@ -48,8 +46,8 @@ public final class Bomb implements Tickable, Positionable, Comparable {
         lifeTime -= elapsed;
         log.info("lifeTime " + lifeTime);
         if (lifeTime <= 0)
-            isAlive = false;
-        log.info("isAlive " + isAlive);
+            alive = false;
+        log.info("alive " + alive);
     }
 
     @Override
@@ -86,6 +84,11 @@ public final class Bomb implements Tickable, Positionable, Comparable {
                 "\nrangeExplosion = " + explosionRange +
                 "\nlifeTime = " + lifeTime +
                 "\n}";
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
     }
 
     public void decrementLifeTime() {

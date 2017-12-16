@@ -26,10 +26,10 @@ public class MechanicsSubroutines {
             int brick_X = gameObject.getPosition().getX();
             int brick_Y = gameObject.getPosition().getY();
             Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y - brickSize);
-            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb)) && (!(gameObject instanceof Player))) {
+            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb))
+                    && (!(gameObject instanceof Player) && (!(gameObject instanceof Explosion)))) {
                 if ((brickBar.isColliding(playerBar)) && !(gameObject.getId() == playerId)) {
-                    log.info("===================");
-                    log.info("All clear");
+                    log.info("isColliding");
                     return false;
                 }
             }
@@ -105,9 +105,28 @@ public class MechanicsSubroutines {
     }
 
 
-    public void youDied(Map<Integer, GameObject> replica, Player player, Explosion explosion) {
-        if (player.getPosition().isColliding(explosion.getPosition())) {
-            replica.remove(player.getId());
+    public boolean youDied(Map<Integer, GameObject> replica, Explosion explosion) {
+        final int brickSize = 31;
+        final int fireSize = 28;
+        int fire_X = explosion.getPosition().getX();
+        int fire_Y = explosion.getPosition().getY();
+
+        Bar fireBar = new Bar(fire_X, fire_X + fireSize, fire_Y, fire_Y - fireSize);
+
+        for (GameObject gameObject : replica.values()) {
+            if ( gameObject instanceof Player) {
+                int brick_X = gameObject.getPosition().getX();
+                int brick_Y = gameObject.getPosition().getY();
+                Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y - brickSize);
+
+                if (brickBar.isColliding(fireBar)) {
+                    replica.remove(gameObject.getId()); //удаляем взорвавшуюся player'а
+                    return false;//все, один объект взорвался, дальше не надо работать по этому кейсу
+                }
+            }
+
         }
+
+        return true;
     }
 }

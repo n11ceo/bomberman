@@ -17,7 +17,7 @@ public final class Explosion implements Tickable, Positionable {
     private final String type = "Fire";
 
     @JsonIgnore
-    private boolean isAlive = true;
+    private boolean alive = true;
 
     @JsonIgnore
     private int lifeTime = 1000;
@@ -35,8 +35,8 @@ public final class Explosion implements Tickable, Positionable {
         lifeTime -= elapsed;
         log.info("lifeTime " + lifeTime);
         if (lifeTime <= 0)
-            isAlive = false;
-        log.info("isAlive " + isAlive);
+            alive = false;
+        log.info("alive " + alive);
     }
 
     @Override
@@ -66,6 +66,11 @@ public final class Explosion implements Tickable, Positionable {
     }
 
     @Override
+    public boolean isAlive() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "\nExplosion: {" +
                 "\nid = " + id +
@@ -74,9 +79,7 @@ public final class Explosion implements Tickable, Positionable {
                 "\n}";
     }
 
-    public void decrementLifeTime() {
-        this.lifeTime = lifeTime--;
-    }
+
 
     public int getLifeTime() {
         return this.lifeTime;
