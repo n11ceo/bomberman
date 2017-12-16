@@ -13,7 +13,7 @@ public class MechanicsSubroutines {
 
     public boolean collisionCheck(GameObject currentPlayer, Map<Integer, GameObject> replica) {
         final int brickSize = 31;
-        final int playerSize = 25;
+        final int playerSize = 31;
         int player_X = currentPlayer.getPosition().getX();
         int player_Y = currentPlayer.getPosition().getY();
 
@@ -26,15 +26,22 @@ public class MechanicsSubroutines {
             int brick_X = gameObject.getPosition().getX();
             int brick_Y = gameObject.getPosition().getY();
             Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y - brickSize);
-            if (!(gameObject instanceof Bonus)) {
+            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb))){
                 if ((brickBar.isColliding(playerBar)) && !(gameObject.getId() == playerId)) {
                     log.info("===================");
                     log.info("All clear");
                     return false;
                 }
             }
-           
 
+           if (gameObject instanceof Bomb) {
+               if (!brickBar.isColliding(playerBar)) {
+                   ((Bomb) gameObject).setNewBombStillCollide(false);
+               }
+               if (( !((Bomb) gameObject).isNewBombStillCollide()) &&(brickBar.isColliding(playerBar))) {
+                   return false;
+               }
+           }
         }
 
 

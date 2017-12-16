@@ -184,7 +184,9 @@ public class GameMechanics {
                             }
                             break;
                         case BOMB:
-                            Bomb tmpBomb = new Bomb(idGenerator.get(), currentPlayer.getPosition(),
+                            Point bombPosition = new Point(currentPlayer.getPosition().getX()+brickSize/4,
+                                    currentPlayer.getPosition().getY()-brickSize/4);
+                            Bomb tmpBomb = new Bomb(idGenerator.get(), bombPosition,
                                 currentPlayer.getBombPower());
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), tmpBomb);
