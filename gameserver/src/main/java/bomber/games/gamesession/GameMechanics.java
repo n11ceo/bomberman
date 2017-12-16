@@ -10,10 +10,8 @@ import bomber.games.model.Tickable;
 import bomber.games.util.BonusRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.rmi.MarshalledObject;
 import java.util.*;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -52,6 +50,16 @@ public class GameMechanics {
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
 
         BonusRandom bonusRandom = new BonusRandom(playersCount);
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(brickSize, 2 * brickSize), Bonus.Type.speed));
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(2*brickSize, brickSize), Bonus.Type.bomb));
+
+
         for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
                 if (y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
@@ -72,8 +80,8 @@ public class GameMechanics {
                             Bonus.Type bonus = bonusRandom.randomBonus();
                             if (bonus != null) {
                                 idGenerator.getAndIncrement();
-                                replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                                        new Point(x*brickSize, y*brickSize), bonus));
+//                                replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+//                                        new Point(x * brickSize, y * brickSize), bonus));
                             }
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), new Box(idGenerator.get(),
@@ -99,7 +107,7 @@ public class GameMechanics {
         for (int i = 1; i <= playersCount; i++) {
             Point playerPoint = new Point(spawnPositionsCollection.get(positionSetting).get(i).getX(),
                     spawnPositionsCollection.get(positionSetting).get(i).getY());
-            Point currentPoint = new Point(x*brickSize, y*brickSize);
+            Point currentPoint = new Point(x * brickSize, y * brickSize);
             if (playerPoint.equals(currentPoint))
                 flag = true;
             if (new Point(playerPoint.getX() + brickSize, playerPoint.getY()).equals(currentPoint))
@@ -160,48 +168,38 @@ public class GameMechanics {
                     log.info("currentPlayerId = " + currentPlayer.getId());
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
                         case UP: //если идет вверх
-
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));//задали новые координаты
-
+                            //задали новые координаты
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));
                                 currentPlayer.setPosition(previosPos);
-                        }
-
-
+                            }
                             break;
 
                         case DOWN:
-
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));//задали новые координаты
-
+                            //задали новые координаты
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));
                                 currentPlayer.setPosition(previosPos);
                             }
-
                             break;
                         case LEFT:
-
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));//задали новые координаты
-
+                            //задали новые координаты
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));
                                 currentPlayer.setPosition(previosPos);
                             }
-
                             break;
                         case RIGHT:
-
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));//задали новые координаты
-
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));
                                 currentPlayer.setPosition(previosPos);
                             }
-
                             break;
                         case BOMB:
                             idGenerator.getAndIncrement();
-                           replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
-                                  currentPlayer.getPosition(), currentPlayer.getBombPower()));
-
+                            replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
+                                    currentPlayer.getPosition(), currentPlayer.getBombPower()));
+                            registerTickable((Tickable) replica.get(idGenerator.get()));
                         default:
                             break;
                     }
@@ -317,8 +315,6 @@ public class GameMechanics {
     }
 
 
-
-
     private List<Point> setSpawnPositions() {   //only default realisation now, may be expanded for more spawn options
         return null;
     }
@@ -327,7 +323,7 @@ public class GameMechanics {
         this.tickables = tickables;
     }
 
-    public  void registerTickable(Tickable tickable) {
+    public void registerTickable(Tickable tickable) {
         tickables.add(tickable);
     }
 

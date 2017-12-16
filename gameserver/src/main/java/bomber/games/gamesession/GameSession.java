@@ -8,13 +8,14 @@ import bomber.games.util.GeneratorIdSession;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GameSession {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameSession.class);
-    private Map<Integer, GameObject> replica = new HashMap<>();
+    private Map<Integer, GameObject> replica = new ConcurrentHashMap<>();
     private final int id;
     private final AtomicInteger idGenerator = new AtomicInteger(0); // У каждой сессии свой набор id
     private ConcurrentLinkedQueue<PlayerAction> inputQueue = new ConcurrentLinkedQueue<>();
@@ -51,8 +52,8 @@ public class GameSession {
         return idGenerator;
     }
 
-    public HashMap<Integer, GameObject> getReplica() {
-        return new HashMap<>(replica);
+    public ConcurrentHashMap<Integer, GameObject> getReplica() {
+        return new ConcurrentHashMap<>(replica);
     }
 
     public GameMechanics getGameMechanics() {

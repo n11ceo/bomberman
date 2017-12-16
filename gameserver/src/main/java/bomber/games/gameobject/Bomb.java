@@ -7,17 +7,21 @@ import org.slf4j.LoggerFactory;
 import bomber.games.model.Tickable;
 
 
-public final class Bomb implements Tickable, Positionable {
+public final class Bomb implements Tickable, Positionable, Comparable {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Bomb.class);
     private static final long LIFE_TIME = 2500; //after pass death
 
-    private final Point position;
-    private final int id;
+    private Point position;
+    private int id;
     private int lifeTime = 300; //вообще тут знать бы сколько tick у нас происходит в одну секунду
     private int explosionRange;
+
+
     private final String type = "Bomb";
 
+    public Bomb() {
+    }
 
     public Bomb(final int id, final Point position, final int explosionRange) {
         this.id = id;
@@ -79,5 +83,18 @@ public final class Bomb implements Tickable, Positionable {
 
     public int getExplosionRange() {
         return explosionRange;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        if (this.id == o.hashCode())
+            return 0;
+        else
+            return -1;
     }
 }
