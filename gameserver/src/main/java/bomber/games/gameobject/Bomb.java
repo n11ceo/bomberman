@@ -16,10 +16,17 @@ public final class Bomb implements Tickable, Positionable, Comparable {
     private Point position;
     private int id;
     @JsonIgnore
-    private int lifeTime = 300;//вообще тут знать бы сколько tick у нас происходит в одну секунду
+    private int lifeTime = 1000;//вообще тут знать бы сколько tick у нас происходит в одну секунду
     @JsonIgnore
     private int explosionRange;
     private final String type = "Bomb";
+    private boolean isAlive = true;
+
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
+
 
     public Bomb() {
     }
@@ -27,7 +34,6 @@ public final class Bomb implements Tickable, Positionable, Comparable {
     public Bomb(final int id, final Point position, final int explosionRange) {
         this.id = id;
         this.position = position;
-        this.lifeTime = 0;
         this.explosionRange = explosionRange;
 
         log.info("New Bomb: id={}, position({}, {})\n", id, position.getX(), position.getY());
@@ -35,7 +41,11 @@ public final class Bomb implements Tickable, Positionable, Comparable {
 
     @Override
     public void tick(final long elapsed) {
-        lifeTime += elapsed;
+        lifeTime -= elapsed;
+        log.info("lifeTime " + lifeTime);
+        if (lifeTime <= 0)
+            isAlive = false;
+        log.info("isAlive " + isAlive);
     }
 
     @Override

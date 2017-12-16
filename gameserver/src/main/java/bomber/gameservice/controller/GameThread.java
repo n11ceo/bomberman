@@ -3,6 +3,7 @@ package bomber.gameservice.controller;
 
 import bomber.connectionhandler.EventHandler;
 import bomber.connectionhandler.json.Json;
+import bomber.games.gameobject.Bomb;
 import bomber.games.gamesession.GameSession;
 import bomber.games.model.Tickable;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,18 @@ public class GameThread implements Runnable {
         } catch (IOException e) {
             log.error("Error to send REPLICA");
         }
-        tickables.forEach(tickable -> tickable.tick(elapsed));
+        for (Tickable tickable : tickables) {
+            tickable.tick(elapsed);
+                if (tickable instanceof Bomb) {
+                    log.info("it is a bomb, im here");
+                    if (!((Bomb) tickable).getIsAlive()) {
+                        log.info("it ISNT alive");
+                        gameSession.getReplica().remove(((Bomb) tickable).getId());
+                        tickables.remove(tickable);
+                    }
+                }
+        }
+//        tickables.forEach(tickable -> tickable.tick(elapsed));
         if (!gameSession.getInputQueue().isEmpty()) {
             gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
             gameSession.getGameMechanics().doMechanic(gameSession.getReplica(), gameSession.getIdGenerator());
