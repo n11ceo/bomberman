@@ -52,13 +52,13 @@ public class GameMechanics {
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
 
-//        idGenerator.getAndIncrement();
-//        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-//                new Point(brickSize, 2 * brickSize), Bonus.Type.Bonus_Speed));
-//
-//        idGenerator.getAndIncrement();
-//        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-//                new Point(2*brickSize, brickSize), Bonus.Type.Bonus_Bomb));
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(brickSize, 2 * brickSize), Bonus.Type.Bonus_Speed));
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(2 * brickSize, brickSize), Bonus.Type.Bonus_Bomb));
 
         BonusRandom bonusRandom = new BonusRandom(playersCount);
 
@@ -155,7 +155,7 @@ public class GameMechanics {
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
                         case UP: //если идет вверх
                             //задали новые координаты
-                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));
+                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
@@ -163,7 +163,7 @@ public class GameMechanics {
 
                         case DOWN:
                             //задали новые координаты
-                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));
+                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
@@ -171,23 +171,23 @@ public class GameMechanics {
                         case LEFT:
                             //задали новые координаты
 
-                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));
+                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
                             break;
                         case RIGHT:
 
-                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));
+                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
                             break;
                         case BOMB:
-                            Point bombPosition = new Point(currentPlayer.getPosition().getX()+brickSize/4,
-                                    currentPlayer.getPosition().getY()-brickSize/4);
+                            Point bombPosition = new Point(currentPlayer.getPosition().getX() + brickSize / 4,
+                                    currentPlayer.getPosition().getY() - brickSize / 4);
                             Bomb tmpBomb = new Bomb(idGenerator.get(), bombPosition,
-                                currentPlayer.getBombPower());
+                                    currentPlayer.getBombPower());
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), tmpBomb);
                             log.info("Bomb must be here");
@@ -210,7 +210,7 @@ public class GameMechanics {
                             currentPlayer.setBombPower(currentPlayer.getBombPower() + 1);
                             break;
                         case Bonus_Speed:
-                            currentPlayer.setVelocity(currentPlayer.getVelocity() * 2); //вот тут конечно надо бы оптимизировать
+                            currentPlayer.setVelocity(currentPlayer.getVelocity() * 2);
                             break;
                         default:
                             break;
