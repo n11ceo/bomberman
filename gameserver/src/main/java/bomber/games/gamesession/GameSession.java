@@ -52,8 +52,8 @@ public class GameSession {
         return idGenerator;
     }
 
-    public ConcurrentHashMap<Integer, GameObject> getReplica() {
-        return new ConcurrentHashMap<>(replica);
+    public Map<Integer, GameObject> getReplica() {
+        return replica;
     }
 
     public GameMechanics getGameMechanics() {

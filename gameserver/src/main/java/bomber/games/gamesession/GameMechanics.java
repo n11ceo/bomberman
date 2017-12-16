@@ -62,7 +62,7 @@ public class GameMechanics {
                 new Point(2 * brickSize, brickSize), Bonus.Type.Bonus_Bomb));
 
 
-        /*for (int x = 0; x <= gameZone_X; x++) {
+        for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
                 if (y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
                         y * brickSize == (gameZone_Y * brickSize - brickSize)) {
@@ -82,8 +82,8 @@ public class GameMechanics {
                             Bonus.Type bonus = bonusRandom.randomBonus();
                             if (bonus != null) {
                                 idGenerator.getAndIncrement();
-//                                replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-//                                        new Point(x * brickSize, y * brickSize), bonus));
+                                replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                                        new Point(x * brickSize, y * brickSize), bonus));
                             }
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), new Box(idGenerator.get(),
@@ -92,7 +92,7 @@ public class GameMechanics {
                     }
                 }
             }
-        }*/
+        }
         for (int i = 1; i <= playersCount; i++) {
             replica.put(listPlayerId.get(i), new Player(listPlayerId.get(i), spawnPositionsCollection.get(positionSetting).get(i)));
             registerTickable((Tickable) replica.get(listPlayerId.get(i)));
@@ -148,18 +148,16 @@ public class GameMechanics {
 
 
     public void doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
-
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
             if (gameObject instanceof Player) {
                 Player currentPlayer = ((Player) gameObject);
                 Point previosPos = currentPlayer.getPosition();
-                if (actionOnMap.containsKey(currentPlayer.getId())) {
+                if (actionOnMap.containsKey(gameObject.getId())) {
                     log.info("currentPlayerId = " + currentPlayer.getId());
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
                         case UP: //если идет вверх
                             //задали новые координаты
-
                                 currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
@@ -168,7 +166,6 @@ public class GameMechanics {
 
                         case DOWN:
                             //задали новые координаты
-
                                 currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
@@ -190,15 +187,14 @@ public class GameMechanics {
                             }
                             break;
                         case BOMB:
+                            Bomb tmpBomb = new Bomb(idGenerator.get(), currentPlayer.getPosition(),
+                                currentPlayer.getBombPower());
                             idGenerator.getAndIncrement();
-
-                            map.add(new Bomb(idGenerator.get(), previosPos, currentPlayer.getBombPower()));
-                          /*  *//*replica.put(idGenerator.get(), new Bomb(idGenerator.get()*//*,
-                                    currentPlayer.getPosition(), currentPlayer.getBombPower()));*/
+                            replica.put(idGenerator.get(), tmpBomb);
                             log.info("Bomb must be here");
                             log.info("========================================");
                             log.info(Json.replicaToJson(replica));
-                            registerTickable((Tickable) map.get(idGenerator.get()));
+                            registerTickable(tmpBomb);
                             break;
                         default:
                             break;
