@@ -145,10 +145,9 @@ public final class Player implements Movable, Comparable {
     @Override
     public int compareTo(@NotNull Object o) {
 
-        Player player = (Player) o;
-        if (this.id == player.id)
+        if (this.id == o.hashCode())
             return 0;
-        else if (this.id > player.id)
+        else if (this.id > o.hashCode())
             return 1;
         else
             return -1;

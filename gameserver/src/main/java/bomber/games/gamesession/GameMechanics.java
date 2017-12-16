@@ -2,6 +2,7 @@ package bomber.games.gamesession;
 
 import bomber.connectionhandler.EventHandler;
 import bomber.connectionhandler.PlayerAction;
+import bomber.connectionhandler.json.Json;
 import bomber.games.gameobject.*;
 import bomber.games.geometry.Point;
 import bomber.games.model.GameObject;
@@ -10,10 +11,8 @@ import bomber.games.model.Tickable;
 import bomber.games.util.BonusRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.rmi.MarshalledObject;
 import java.util.*;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,6 +32,7 @@ public class GameMechanics {
     private static List<List<Point>> spawnPositionsCollection = new ArrayList<>();
     private int positionSetting;  //choose which spawn positions will be applied
     private Set<Tickable> tickables = new ConcurrentSkipListSet<>();
+    private ArrayList<GameObject> map = new ArrayList<>();
 
     public GameMechanics(int positionSetting, int playersCount) {
         this.positionSetting = positionSetting;
@@ -65,6 +65,16 @@ public class GameMechanics {
 
 
         BonusRandom bonusRandom = new BonusRandom(playersCount);
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
+                new Point(brickSize, 2 * brickSize), 1));
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(2 * brickSize, brickSize), Bonus.Type.Bonus_Bomb));
+
+
         for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
                 if (y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
@@ -86,7 +96,7 @@ public class GameMechanics {
                             if (bonus != null) {
                                 idGenerator.getAndIncrement();
                                 replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                                        new Point(x*brickSize, y*brickSize), bonus));
+                                        new Point(x * brickSize, y * brickSize), bonus));
                             }
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), new Box(idGenerator.get(),
@@ -105,6 +115,9 @@ public class GameMechanics {
                 log.error("unable to sendPosses");
             }
         }
+
+      /*  *//*replica.put(400, new Bomb(400, new Point(300, 300), 1));*//*
+        replica.put(300, new Bonus(300, new Point(200, 200), Bonus.Type.Bonus_Fire));*/
     }
 
     private boolean isPlayerSpawn(int x, int y) {
@@ -112,7 +125,7 @@ public class GameMechanics {
         for (int i = 1; i <= playersCount; i++) {
             Point playerPoint = new Point(spawnPositionsCollection.get(positionSetting).get(i).getX(),
                     spawnPositionsCollection.get(positionSetting).get(i).getY());
-            Point currentPoint = new Point(x*brickSize, y*brickSize);
+            Point currentPoint = new Point(x * brickSize, y * brickSize);
             if (playerPoint.equals(currentPoint))
                 flag = true;
             if (new Point(playerPoint.getX() + brickSize, playerPoint.getY()).equals(currentPoint))
@@ -147,74 +160,55 @@ public class GameMechanics {
     }
 
 
-/*
-    public void doMechanic(Map<Integer, GameObject> replica, ConcurrentLinkedQueue<PlayerAction> inputQueue ) {
-        readInputQueue(inputQueue);
-
-        log.info("---------------------------");
-        log.info(replica.toString());
-        log.info("===========================");
-        for (PlayerAction playerAction : actionOnMap.values()) {
-            log.info("queue = {}", playerAction);
-        }
-
-    }
-*/
-
-
     public void doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
-
         for (GameObject gameObject : replica.values()) {
             MechanicsSubroutines mechanicsSubroutines = new MechanicsSubroutines();//подняли вспомогательные методы
             if (gameObject instanceof Player) {
                 Player currentPlayer = ((Player) gameObject);
                 Point previosPos = currentPlayer.getPosition();
-                if (actionOnMap.containsKey(currentPlayer.getId())) {
+                if (actionOnMap.containsKey(gameObject.getId())) {
                     log.info("currentPlayerId = " + currentPlayer.getId());
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
                         case UP: //если идет вверх
-
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));//задали новые координаты
-
+                            //задали новые координаты
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
-                        }
-
-
+                            }
                             break;
 
                         case DOWN:
-
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));//задали новые координаты
-
+                            //задали новые координаты
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
-
                             break;
                         case LEFT:
+                            //задали новые координаты
 
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));//задали новые координаты
-
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
-
                             break;
                         case RIGHT:
 
-                            currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));//задали новые координаты
-
+                                currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));
                             if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
-
                             break;
                         case BOMB:
+                            Bomb tmpBomb = new Bomb(idGenerator.get(), currentPlayer.getPosition(),
+                                currentPlayer.getBombPower());
                             idGenerator.getAndIncrement();
-                           replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
-                                  currentPlayer.getPosition(), currentPlayer.getBombPower()));
-
+                            replica.put(idGenerator.get(), tmpBomb);
+                            log.info("Bomb must be here");
+                            log.info("========================================");
+                            log.info(Json.replicaToJson(replica));
+                            registerTickable(tmpBomb);
+                            break;
                         default:
                             break;
                     }
@@ -330,8 +324,6 @@ public class GameMechanics {
     }
 
 
-
-
     private List<Point> setSpawnPositions() {   //only default realisation now, may be expanded for more spawn options
         return null;
     }
@@ -340,12 +332,16 @@ public class GameMechanics {
         this.tickables = tickables;
     }
 
-    public  void registerTickable(Tickable tickable) {
+    public void registerTickable(Tickable tickable) {
         tickables.add(tickable);
     }
 
     public void unregisterTickable(Tickable tickable) {
         tickables.remove(tickable);
+    }
+
+    public ArrayList<GameObject> getMap() {
+        return map;
     }
 }
 
