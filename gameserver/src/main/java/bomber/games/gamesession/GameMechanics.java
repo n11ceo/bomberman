@@ -32,6 +32,7 @@ public class GameMechanics {
     private static List<List<Point>> spawnPositionsCollection = new ArrayList<>();
     private int positionSetting;  //choose which spawn positions will be applied
     private Set<Tickable> tickables = new ConcurrentSkipListSet<>();
+    private ArrayList<GameObject> map = new ArrayList<>();
 
     public GameMechanics(int positionSetting, int playersCount) {
         this.positionSetting = positionSetting;
@@ -53,8 +54,8 @@ public class GameMechanics {
         BonusRandom bonusRandom = new BonusRandom(playersCount);
 
         idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                new Point(brickSize, 2 * brickSize), Bonus.Type.Bonus_Speed));
+        replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
+                new Point(brickSize, 2 * brickSize), 1));
 
         idGenerator.getAndIncrement();
         replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
@@ -101,6 +102,9 @@ public class GameMechanics {
                 log.error("unable to sendPosses");
             }
         }
+
+      /*  *//*replica.put(400, new Bomb(400, new Point(300, 300), 1));*//*
+        replica.put(300, new Bonus(300, new Point(200, 200), Bonus.Type.Bonus_Fire));*/
     }
 
     private boolean isPlayerSpawn(int x, int y) {
@@ -187,12 +191,15 @@ public class GameMechanics {
                             break;
                         case BOMB:
                             idGenerator.getAndIncrement();
-                            replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
-                                    currentPlayer.getPosition(), currentPlayer.getBombPower()));
+
+                            map.add(new Bomb(idGenerator.get(), previosPos, currentPlayer.getBombPower()));
+                          /*  *//*replica.put(idGenerator.get(), new Bomb(idGenerator.get()*//*,
+                                    currentPlayer.getPosition(), currentPlayer.getBombPower()));*/
                             log.info("Bomb must be here");
                             log.info("========================================");
                             log.info(Json.replicaToJson(replica));
-                            registerTickable((Tickable) replica.get(idGenerator.get()));
+                            registerTickable((Tickable) map.get(idGenerator.get()));
+                            break;
                         default:
                             break;
                     }
@@ -322,6 +329,10 @@ public class GameMechanics {
 
     public void unregisterTickable(Tickable tickable) {
         tickables.remove(tickable);
+    }
+
+    public ArrayList<GameObject> getMap() {
+        return map;
     }
 }
 

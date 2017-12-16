@@ -7,9 +7,9 @@ Messages = Class.extend({
         this.handler['Box'] = this.handleTile;
         this.handler['Wall'] = this.handleTile;
         this.handler['Fire'] = this.handleFire;
-        this.handler['Bonus_Fire'] = this.handleBonus;
         this.handler['Bonus_Bomb'] = this.handleBonus;
         this.handler['Bonus_Speed'] = this.handleBonus;
+        this.handler['Bonus_Fire'] = this.handleBonus;
     },
 
     move: function (direction) {
@@ -52,7 +52,7 @@ Messages = Class.extend({
         gInputEngine.possessed = parseInt(msg.data);
     },
 
-    handlePawn: function(obj) {
+    handlePawn: function (obj) {
         var player = gGameEngine.players.find(function (el) {
             return el.id === obj.id;
         });
@@ -68,19 +68,19 @@ Messages = Class.extend({
         }
     },
 
-    handleBomb: function(obj) {
+    handleBomb: function (obj) {
         var bomb = gGameEngine.bombs.find(function (el) {
             return el.id === obj.id;
         });
         var position = Utils.getEntityPosition(obj.position);
 
         if (bomb) {
-           /* console.log("bomb exist" + bomb )*/
+            /* console.log("bomb exist" + bomb )*/
             bomb.bmp.x = position.x;
             bomb.bmp.y = position.y;
         } else {
             bomb = new Bomb(obj.id, position);
-   /*         console.log("create new bomb" + bomb)*/
+            /*         console.log("create new bomb" + bomb)*/
             gGameEngine.bombs.push(bomb);
         }
     },
@@ -118,14 +118,13 @@ Messages = Class.extend({
         });
         var position = Utils.getEntityPosition(obj.position);
         if (bonus) {
-
             bonus.bmp.x = position.x;
             bonus.bmp.y = position.y;
-            /*console.log("bonus exist x =" + bonus.bmp.x + " y =" + bonus.bmp.y );*/
-        } else {
 
-            bonus = new Bonus(obj.id, position);
-          /*  console.log("bonus exist" + bomb);*/
+            bonus.type = bonus.types[obj.type];0
+        } else {
+            bonus = new Bonus(obj.id, position, obj.type);
+            console.log("create new bonus" + bonus);
             gGameEngine.bonuses.push(bonus);
         }
     }

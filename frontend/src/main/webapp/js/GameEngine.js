@@ -60,7 +60,7 @@ GameEngine = Class.extend({
         });
         queue.loadManifest([
             {id: "playerBoy", src: "img/george.png"},
-            {id: "playerGirl", src: "img/betty.png"},
+            {id: "playerGirl", src: "img/george.png"},
             {id: "playerGirl2", src: "img/betty2.png"},
             {id: "tile_grass", src: "img/tile_grass.png"},
             {id: "tile_wall", src: "img/tile_wall.png"},

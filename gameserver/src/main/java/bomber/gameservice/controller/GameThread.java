@@ -56,6 +56,7 @@ public class GameThread implements Runnable {
 
     private void act(long elapsed) {
         try {
+
             EventHandler.sendReplica(gameSession.getId());
         } catch (IOException e) {
             log.error("Error to send REPLICA");
@@ -65,6 +66,7 @@ public class GameThread implements Runnable {
             gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
             gameSession.getGameMechanics().doMechanic(gameSession.getReplica(), gameSession.getIdGenerator());
             gameSession.getGameMechanics().clearInputQueue(gameSession.getInputQueue());
+            gameSession.getReplica(gameSession.getGameMechanics().getMap().get(0).getId() ,gameSession.getGameMechanics().getMap().get(0));
         }
 
     }

@@ -61,6 +61,7 @@ public class EventHandler extends TextWebSocketHandler implements WebSocketHandl
                 connectionPool.get(id).getWebSocketSession().sendMessage(
                         new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
             }
+
 //        for (WebSocketSession session : list) {
 //            session.sendMessage(new TextMessage(Json.replicaToJson(GameController.getGameSession(gameId).getReplica())));
         }
