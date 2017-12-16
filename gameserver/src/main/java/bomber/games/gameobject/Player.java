@@ -130,7 +130,7 @@ public final class Player implements Movable, Comparable {
         return velocity;
     }
 
-    public void setVelocity(int velocity) {
+    public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 
