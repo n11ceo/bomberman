@@ -11,16 +11,19 @@ import bomber.games.model.Tickable;
 public final class Bomb implements Tickable, Positionable, Comparable {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Bomb.class);
-    private static final long LIFE_TIME = 2500; //after pass death
+
 
     private Point position;
     private int id;
+    private final String type = "Bomb";
+
     @JsonIgnore
-    private int lifeTime = 10000;//вообще тут знать бы сколько tick у нас происходит в одну секунду
+    private int lifeTime = 1000;//вообще тут знать бы сколько tick у нас происходит в одну секунду
     @JsonIgnore
     private int explosionRange;
+    @JsonIgnore
     boolean isNewBombStillCollide = true;
-    private final String type = "Bomb";
+    @JsonIgnore
     private boolean isAlive = true;
 
     public boolean getIsAlive() {

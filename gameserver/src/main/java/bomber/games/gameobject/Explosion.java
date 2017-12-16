@@ -2,6 +2,7 @@ package bomber.games.gameobject;
 
 import bomber.games.geometry.Point;
 import bomber.games.model.Positionable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.LoggerFactory;
 import bomber.games.model.Tickable;
 
@@ -13,7 +14,13 @@ public final class Explosion implements Tickable, Positionable {
 
     private final Point position;
     private final int id;
-    private int lifeTime = 60; //вообще тут знать бы сколько tick у нас происходит в одну секунду
+    private final String type = "Fire";
+
+    @JsonIgnore
+    private boolean isAlive = true;
+
+    @JsonIgnore
+    private int lifeTime = 1000;
 
 
     public Explosion(int id, final Point position) {
@@ -25,7 +32,11 @@ public final class Explosion implements Tickable, Positionable {
 
     @Override
     public void tick(final long elapsed) {
-        lifeTime += elapsed;
+        lifeTime -= elapsed;
+        log.info("lifeTime " + lifeTime);
+        if (lifeTime <= 0)
+            isAlive = false;
+        log.info("isAlive " + isAlive);
     }
 
     @Override
@@ -69,5 +80,9 @@ public final class Explosion implements Tickable, Positionable {
 
     public int getLifeTime() {
         return this.lifeTime;
+    }
+
+    public String getType() {
+        return type;
     }
 }
