@@ -7,6 +7,9 @@ Messages = Class.extend({
         this.handler['Box'] = this.handleTile;
         this.handler['Wall'] = this.handleTile;
         this.handler['Fire'] = this.handleFire;
+        this.handler['Bonus_Fire'] = this.handleBonus;
+        this.handler['Bonus_Bomb'] = this.handleBonus;
+        this.handler['Bonus_Speed'] = this.handleBonus;
     },
 
     move: function (direction) {
@@ -72,10 +75,12 @@ Messages = Class.extend({
         var position = Utils.getEntityPosition(obj.position);
 
         if (bomb) {
+           /* console.log("bomb exist" + bomb )*/
             bomb.bmp.x = position.x;
             bomb.bmp.y = position.y;
         } else {
             bomb = new Bomb(obj.id, position);
+   /*         console.log("create new bomb" + bomb)*/
             gGameEngine.bombs.push(bomb);
         }
     },
@@ -104,6 +109,24 @@ Messages = Class.extend({
         if (!fire) {
             fire = new Fire(obj.id, position);
             gGameEngine.fires.push(fire);
+        }
+    },
+
+    handleBonus: function (obj) {
+        var bonus = gGameEngine.bonuses.find(function (value) {
+            return value.id === obj.id
+        });
+        var position = Utils.getEntityPosition(obj.position);
+        if (bonus) {
+
+            bonus.bmp.x = position.x;
+            bonus.bmp.y = position.y;
+            /*console.log("bonus exist x =" + bonus.bmp.x + " y =" + bonus.bmp.y );*/
+        } else {
+
+            bonus = new Bonus(obj.id, position);
+          /*  console.log("bonus exist" + bomb);*/
+            gGameEngine.bonuses.push(bonus);
         }
     }
 

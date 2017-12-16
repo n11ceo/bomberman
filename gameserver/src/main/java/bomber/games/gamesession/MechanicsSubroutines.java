@@ -30,7 +30,7 @@ public class MechanicsSubroutines {
             Bar brickBar = new Bar(brick_X,brick_X+brickSize,brick_Y,brick_Y - brickSize);
             if ((brickBar.isColliding(playerBar)) && !(gameObject.getId() == playerId)) {
                 log.info("===================");
-                log.info("All clear");
+                log.info("Collision with " + gameObject);
                 return false;
             }
         }

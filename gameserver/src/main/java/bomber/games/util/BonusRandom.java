@@ -9,7 +9,7 @@ public class BonusRandom {
     public static final int BONUS_PER_PLAYER = 3; //if changing to a number not dividable by 3 make sure that
     private int bonusCount = 0;                                              //Each_Bonus_Max will be ok
     private final int Total_Maximum;
-    private Bonus.Type bonusType[] = new Bonus.Type[] {null, Bonus.Type.speed, Bonus.Type.bomb, Bonus.Type.fire};
+    private Bonus.Type bonusType[] = new Bonus.Type[] {null, Bonus.Type.Bonus_Speed, Bonus.Type.Bonus_Bomb, Bonus.Type.Bonus_Fire};
     private Random random;
 
     public BonusRandom(int playersCount) {

@@ -2,6 +2,7 @@ package bomber.games.gameobject;
 
 import bomber.games.geometry.Point;
 import bomber.games.model.Positionable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import bomber.games.model.Tickable;
@@ -14,10 +15,10 @@ public final class Bomb implements Tickable, Positionable, Comparable {
 
     private Point position;
     private int id;
-    private int lifeTime = 300; //вообще тут знать бы сколько tick у нас происходит в одну секунду
+    @JsonIgnore
+    private int lifeTime = 300;//вообще тут знать бы сколько tick у нас происходит в одну секунду
+    @JsonIgnore
     private int explosionRange;
-
-
     private final String type = "Bomb";
 
     public Bomb() {

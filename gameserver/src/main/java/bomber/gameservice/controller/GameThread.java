@@ -36,18 +36,17 @@ public class GameThread implements Runnable {
         gameSession.setupGameMap();
         gameSessionMap.put(gameId, gameSession);
         while (!Thread.currentThread().isInterrupted() || !gameSession.isGameOver()) {
-            log.info("========================================");
-            log.info(Json.replicaToJson(gameSession.getReplica()));
+
             long started = System.currentTimeMillis();
             act(FRAME_TIME);
             long elapsed = System.currentTimeMillis() - started;
             if (elapsed < FRAME_TIME) {
-                log.info("All tick finish at {} ms", elapsed);
+        /*        log.info("All tick finish at {} ms", elapsed);*/
                 LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(FRAME_TIME - elapsed));
             } else {
                 log.warn("tick lag {} ms", elapsed - FRAME_TIME);
             }
-            log.info("{}: tick ", tickNumber);
+          /*  log.info("{}: tick ", tickNumber);*/
             tickNumber++;
 
         }

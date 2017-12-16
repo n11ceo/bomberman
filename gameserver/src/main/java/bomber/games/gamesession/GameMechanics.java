@@ -2,6 +2,7 @@ package bomber.games.gamesession;
 
 import bomber.connectionhandler.EventHandler;
 import bomber.connectionhandler.PlayerAction;
+import bomber.connectionhandler.json.Json;
 import bomber.games.gameobject.*;
 import bomber.games.geometry.Point;
 import bomber.games.model.GameObject;
@@ -53,14 +54,14 @@ public class GameMechanics {
 
         idGenerator.getAndIncrement();
         replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                new Point(brickSize, 2 * brickSize), Bonus.Type.speed));
+                new Point(brickSize, 2 * brickSize), Bonus.Type.Bonus_Speed));
 
         idGenerator.getAndIncrement();
         replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                new Point(2*brickSize, brickSize), Bonus.Type.bomb));
+                new Point(2 * brickSize, brickSize), Bonus.Type.Bonus_Bomb));
 
 
-        for (int x = 0; x <= gameZone_X; x++) {
+        /*for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
                 if (y == 0 || x == 0 || x * brickSize == (gameZone_X * brickSize - brickSize) ||
                         y * brickSize == (gameZone_Y * brickSize - brickSize)) {
@@ -90,7 +91,7 @@ public class GameMechanics {
                     }
                 }
             }
-        }
+        }*/
         for (int i = 1; i <= playersCount; i++) {
             replica.put(listPlayerId.get(i), new Player(listPlayerId.get(i), spawnPositionsCollection.get(positionSetting).get(i)));
             registerTickable((Tickable) replica.get(listPlayerId.get(i)));
@@ -142,21 +143,6 @@ public class GameMechanics {
     }
 
 
-/*
-    public void doMechanic(Map<Integer, GameObject> replica, ConcurrentLinkedQueue<PlayerAction> inputQueue ) {
-        readInputQueue(inputQueue);
-
-        log.info("---------------------------");
-        log.info(replica.toString());
-        log.info("===========================");
-        for (PlayerAction playerAction : actionOnMap.values()) {
-            log.info("queue = {}", playerAction);
-        }
-
-    }
-*/
-
-
     public void doMechanic(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
         for (GameObject gameObject : replica.values()) {
@@ -169,29 +155,33 @@ public class GameMechanics {
                     switch (actionOnMap.get(currentPlayer.getId()).getType()) { //либо шагает Up,Down,Right,Left, либо ставит бомбу Bomb
                         case UP: //если идет вверх
                             //задали новые координаты
-                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+
                                 currentPlayer.setPosition(currentPlayer.move(Movable.Direction.UP));
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
                             break;
 
                         case DOWN:
                             //задали новые координаты
-                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+
                                 currentPlayer.setPosition(currentPlayer.move(Movable.Direction.DOWN));
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
                             break;
                         case LEFT:
                             //задали новые координаты
-                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+
                                 currentPlayer.setPosition(currentPlayer.move(Movable.Direction.LEFT));
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
                             break;
                         case RIGHT:
-                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
+
                                 currentPlayer.setPosition(currentPlayer.move(Movable.Direction.RIGHT));
+                            if (!(mechanicsSubroutines.collisionCheck(currentPlayer, replica))) {
                                 currentPlayer.setPosition(previosPos);
                             }
                             break;
@@ -199,6 +189,9 @@ public class GameMechanics {
                             idGenerator.getAndIncrement();
                             replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
                                     currentPlayer.getPosition(), currentPlayer.getBombPower()));
+                            log.info("Bomb must be here");
+                            log.info("========================================");
+                            log.info(Json.replicaToJson(replica));
                             registerTickable((Tickable) replica.get(idGenerator.get()));
                         default:
                             break;
