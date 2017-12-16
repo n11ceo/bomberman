@@ -49,7 +49,20 @@ public class GameMechanics {
         spawnPositionsCollection.add(new ArrayList<Point>(defaultPositions));
     }
 
-    public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) { //VOID, map instance already exists, no args gameMech is in session
+    public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
+
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(brickSize, 2 * brickSize), Bonus.Type.speed));
+
+        idGenerator.getAndIncrement();
+        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+                new Point(2*brickSize, brickSize), Bonus.Type.bomb));
+
+
+
+
 
         BonusRandom bonusRandom = new BonusRandom(playersCount);
         for (int x = 0; x <= gameZone_X; x++) {
@@ -206,25 +219,25 @@ public class GameMechanics {
                             break;
                     }
                 }
-                /*if (!(mechanicsSubroutines.bonusCheck(currentPlayer, replica) == null)) { //если был взят бонус
+                if (!(mechanicsSubroutines.bonusCheck(currentPlayer, replica) == null)) { //если был взят бонус
                     Bonus getBonus = (Bonus) replica.get(mechanicsSubroutines.bonusCheck(currentPlayer, replica));
                     switch (getBonus.getType()) { //Узнаем что это за бонус
 
-                        case BONUS_BOMB:
+                        case bomb:
                             currentPlayer.setMaxBombs(currentPlayer.getMaxBombs() + 1);
                             break;
 
-                        case BONUS_RANGE:
+                        case fire:
                             currentPlayer.setBombPower(currentPlayer.getBombPower() + 1);
                             break;
-                        case BONUS_SPEED:
+                        case speed:
                             currentPlayer.setVelocity(currentPlayer.getVelocity() + 1); //вот тут конечно надо бы оптимизировать
                             break;
                         default:
                             break;
                     }
 
-                }*/
+                }
             }
 
             /*if (gameObject instanceof Bomb) { //начинаем работать с бомбами
