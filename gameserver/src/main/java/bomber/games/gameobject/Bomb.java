@@ -19,6 +19,7 @@ public final class Bomb implements Tickable, Positionable, Comparable {
     private int lifeTime = 300;//вообще тут знать бы сколько tick у нас происходит в одну секунду
     @JsonIgnore
     private int explosionRange;
+    boolean isNewBombStillCollide = true;
     private final String type = "Bomb";
 
     public Bomb() {
@@ -90,6 +91,13 @@ public final class Bomb implements Tickable, Positionable, Comparable {
         return type;
     }
 
+    public boolean isNewBombStillCollide() {
+        return isNewBombStillCollide;
+    }
+
+    public void setNewBombStillCollide(boolean newBombStillCollide) {
+        isNewBombStillCollide = newBombStillCollide;
+    }
 
     @Override
     public int compareTo(@NotNull Object o) {
