@@ -14,9 +14,10 @@ public class MechanicsSubroutines {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(MechanicsSubroutines.class);
     private AtomicInteger idGenerator;
 
-    public MechanicsSubroutines(AtomicInteger idGenerator){
+    public MechanicsSubroutines(AtomicInteger idGenerator) {
         this.idGenerator = idGenerator;
     }
+
     public boolean collisionCheck(GameObject currentPlayer, Map<Integer, GameObject> replica) {
         final int brickSize = 31;
         final int playerSize = 27;
@@ -97,14 +98,15 @@ public class MechanicsSubroutines {
             int brick_X = gameObject.getPosition().getX();
             int brick_Y = gameObject.getPosition().getY();
             Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y + brickSize);
-
-            if (brickBar.isColliding(fireBar)) { //если на пути взрыва встал НЛО
-                if (gameObject instanceof Box) { //и это НЛО - коробка
-                    idGenerator.getAndIncrement();
-                    replica.put(idGenerator.get(), new Explosion(idGenerator.get(), gameObject.getPosition()));
-                    replica.remove(gameObject.getId()); //удаляем взорвавшуюся коробку
+            if (!(gameObject instanceof Bonus)) {
+                if (brickBar.isColliding(fireBar)) { //если на пути взрыва встал НЛО
+                    if (gameObject instanceof Box) { //и это НЛО - коробка
+                        idGenerator.getAndIncrement();
+                        replica.put(idGenerator.get(), new Explosion(idGenerator.get(), gameObject.getPosition()));
+                        replica.remove(gameObject.getId()); //удаляем взорвавшуюся коробку
+                    }
+                    return false;//все, один объект взорвался, дальше не надо работать по этому кейсу
                 }
-                return false;//все, один объект взорвался, дальше не надо работать по этому кейсу
             }
 
         }
@@ -122,7 +124,7 @@ public class MechanicsSubroutines {
         Bar fireBar = new Bar(fire_X, fire_X + fireSize, fire_Y, fire_Y + fireSize);
 
         for (GameObject gameObject : replica.values()) {
-            if ( gameObject instanceof Player) {
+            if (gameObject instanceof Player) {
                 int brick_X = gameObject.getPosition().getX();
                 int brick_Y = gameObject.getPosition().getY();
                 Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y + brickSize);
