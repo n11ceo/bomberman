@@ -68,7 +68,7 @@ public class GameThread implements Runnable {
                     log.info("it is a bomb, im here");
                     if (!((Bomb) tickable).getIsAlive()) {
                         log.info("it ISNT alive");
-                        gameSession.getReplica().remove(((Bomb) tickable).getId());
+                        //gameSession.getReplica().remove(((Bomb) tickable).getId());
                         tickables.remove(tickable);
                     }
                 }
@@ -78,6 +78,8 @@ public class GameThread implements Runnable {
             gameSession.getGameMechanics().readInputQueue(gameSession.getInputQueue());
             gameSession.getGameMechanics().doMechanic(gameSession.getReplica(), gameSession.getIdGenerator());
             gameSession.getGameMechanics().clearInputQueue(gameSession.getInputQueue());
+            log.info("========================================");
+            log.info(Json.replicaToJson(gameSession.getReplica()));
         }
 
     }

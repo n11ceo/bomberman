@@ -26,22 +26,22 @@ public class MechanicsSubroutines {
             int brick_X = gameObject.getPosition().getX();
             int brick_Y = gameObject.getPosition().getY();
             Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y - brickSize);
-            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb)) && (!(gameObject instanceof Player))){
+            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb)) && (!(gameObject instanceof Player))) {
                 if ((brickBar.isColliding(playerBar)) && !(gameObject.getId() == playerId)) {
-                        log.info("===================");
-                        log.info("All clear");
-                        return false;
+                    log.info("===================");
+                    log.info("All clear");
+                    return false;
                 }
             }
 
-           if (gameObject instanceof Bomb) {
-               if (!brickBar.isColliding(playerBar)) {
-                   ((Bomb) gameObject).setNewBombStillCollide(false);
-               }
-               if (( !((Bomb) gameObject).isNewBombStillCollide()) &&(brickBar.isColliding(playerBar))) {
-                   return false;
-               }
-           }
+            if (gameObject instanceof Bomb) {
+                if (!brickBar.isColliding(playerBar)) {
+                    ((Bomb) gameObject).setNewBombStillCollide(false);
+                }
+                if ((!((Bomb) gameObject).isNewBombStillCollide()) && (brickBar.isColliding(playerBar))) {
+                    return false;
+                }
+            }
         }
 
 
@@ -76,14 +76,31 @@ public class MechanicsSubroutines {
         return null;
     }
 
-    public Boolean createExplosions(Point currentPoint, GameObject gameObject, Map<Integer, GameObject> replica) {
+    public Boolean createExplosions(Point currentPoint, Map<Integer, GameObject> replica) {
 
-        if (gameObject.getPosition().isColliding(currentPoint)) { //если на пути взрыва встал НЛО
-            if (gameObject instanceof Box) { //и это НЛО - коробка
-                replica.remove(gameObject.getId()); //удаляем взорвавшуюся коробку
+
+        final int brickSize = 31;
+        final int fireSize = 28;
+        int fire_X = currentPoint.getX();
+        int fire_Y = currentPoint.getY();
+
+        Bar fireBar = new Bar(fire_X, fire_X + fireSize, fire_Y, fire_Y - fireSize);
+
+        for (GameObject gameObject : replica.values()) {
+
+            int brick_X = gameObject.getPosition().getX();
+            int brick_Y = gameObject.getPosition().getY();
+            Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y - brickSize);
+
+            if (brickBar.isColliding(fireBar)) { //если на пути взрыва встал НЛО
+                if (gameObject instanceof Box) { //и это НЛО - коробка
+                    replica.remove(gameObject.getId()); //удаляем взорвавшуюся коробку
+                }
+                return false;//все, один объект взорвался, дальше не надо работать по этому кейсу
             }
-            return false;//все, один объект взорвался, дальше не надо работать по этому кейсу
+
         }
+
         return true;
     }
 
