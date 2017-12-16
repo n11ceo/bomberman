@@ -26,13 +26,11 @@ public class MechanicsSubroutines {
             int brick_X = gameObject.getPosition().getX();
             int brick_Y = gameObject.getPosition().getY();
             Bar brickBar = new Bar(brick_X, brick_X + brickSize, brick_Y, brick_Y - brickSize);
-            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb))){
+            if ((!(gameObject instanceof Bonus)) && (!(gameObject instanceof Bomb)) && (!(gameObject instanceof Player))){
                 if ((brickBar.isColliding(playerBar)) && !(gameObject.getId() == playerId)) {
-                    if (gameObject instanceof Player) {
                         log.info("===================");
                         log.info("All clear");
                         return false;
-                    }
                 }
             }
 

@@ -184,8 +184,8 @@ public class GameMechanics {
                             }
                             break;
                         case BOMB:
-                            Point bombPosition = new Point(currentPlayer.getPosition().getX() + brickSize / 4,
-                                    currentPlayer.getPosition().getY() - brickSize / 4);
+                            Point bombPosition = new Point(currentPlayer.getPosition().getX(),
+                                    currentPlayer.getPosition().getY());
                             Bomb tmpBomb = new Bomb(idGenerator.get(), bombPosition,
                                     currentPlayer.getBombPower());
                             idGenerator.getAndIncrement();
