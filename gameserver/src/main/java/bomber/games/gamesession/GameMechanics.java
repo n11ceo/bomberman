@@ -52,28 +52,15 @@ public class GameMechanics {
     public void setupGame(Map<Integer, GameObject> replica, AtomicInteger idGenerator) {
 
 
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                new Point(brickSize, 2 * brickSize), Bonus.Type.speed));
-
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                new Point(2*brickSize, brickSize), Bonus.Type.bomb));
-
-
-
-
+//        idGenerator.getAndIncrement();
+//        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+//                new Point(brickSize, 2 * brickSize), Bonus.Type.Bonus_Speed));
+//
+//        idGenerator.getAndIncrement();
+//        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
+//                new Point(2*brickSize, brickSize), Bonus.Type.Bonus_Bomb));
 
         BonusRandom bonusRandom = new BonusRandom(playersCount);
-
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Bomb(idGenerator.get(),
-                new Point(brickSize, 2 * brickSize), 1));
-
-        idGenerator.getAndIncrement();
-        replica.put(idGenerator.get(), new Bonus(idGenerator.get(),
-                new Point(2 * brickSize, brickSize), Bonus.Type.Bonus_Bomb));
-
 
         for (int x = 0; x <= gameZone_X; x++) {
             for (int y = 0; y <= gameZone_Y; y++) {
@@ -115,9 +102,6 @@ public class GameMechanics {
                 log.error("unable to sendPosses");
             }
         }
-
-      /*  *//*replica.put(400, new Bomb(400, new Point(300, 300), 1));*//*
-        replica.put(300, new Bonus(300, new Point(200, 200), Bonus.Type.Bonus_Fire));*/
     }
 
     private boolean isPlayerSpawn(int x, int y) {
@@ -214,23 +198,22 @@ public class GameMechanics {
                     }
                 }
                 if (!(mechanicsSubroutines.bonusCheck(currentPlayer, replica) == null)) { //если был взят бонус
-                    Bonus getBonus = (Bonus) replica.get(mechanicsSubroutines.bonusCheck(currentPlayer, replica));
+                    Integer tmp = mechanicsSubroutines.bonusCheck(currentPlayer, replica);
+                    Bonus getBonus = (Bonus) replica.get(tmp);
                     switch (getBonus.getType()) { //Узнаем что это за бонус
-
-                        case bomb:
+                        case Bonus_Bomb:
                             currentPlayer.setMaxBombs(currentPlayer.getMaxBombs() + 1);
                             break;
-
-                        case fire:
+                        case Bonus_Fire:
                             currentPlayer.setBombPower(currentPlayer.getBombPower() + 1);
                             break;
-                        case speed:
-                            currentPlayer.setVelocity(currentPlayer.getVelocity() + 1); //вот тут конечно надо бы оптимизировать
+                        case Bonus_Speed:
+                            currentPlayer.setVelocity(currentPlayer.getVelocity() * 2); //вот тут конечно надо бы оптимизировать
                             break;
                         default:
                             break;
                     }
-
+                    replica.remove(tmp);
                 }
             }
 
