@@ -16,7 +16,7 @@ CREATE TABLE bomber.gs (
 DROP TABLE IF EXISTS bomber.user;
 CREATE TABLE bomber.user (
   game_id    INTEGER   NOT NULL,
-  id INTEGER NOT NULL,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(25)  NOT NULL,
 
   FOREIGN KEY (game_id) REFERENCES bomber.gs (game) ON DELETE CASCADE

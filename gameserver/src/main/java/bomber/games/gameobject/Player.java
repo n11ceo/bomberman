@@ -1,76 +1,76 @@
 package bomber.games.gameobject;
 
-import bomber.games.gamesession.GameSession;
+
 import bomber.games.geometry.Point;
 import bomber.games.model.Movable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
+import sun.plugin2.main.client.PluginEmbeddedFrame;
 
 
-public final class Player implements Movable {
+public final class Player implements Movable, Comparable {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Player.class);
-    private final int id;
+
+
     private Point position;
-    private long lifeTime;
-    private int velocity;
+    private final int id;
+    private double velocity;
+    private int bombPower;
+    private int maxBombs;
+    private final String type = "Pawn";
+    @JsonIgnore
+    private final int playerSize = 27;
+    @JsonIgnore
+    private long time;
+    @JsonIgnore
+    private boolean alive = true;
 
-
-
-    private int rangeExplosion;
-    private int countBomb;
-    private Type type;
-
-
-    public enum Type {
-        GIRL, BOY
-    }
-
-
-    public Player(final Point position, Type type) {
+    public Player(final int id, final Point position) {
+        this.id = id;
         this.position = position;
-        this.id = GameSession.nextId();
-        this.rangeExplosion = 1;
-        this.velocity = 1;
-        this.countBomb = 1;
-        this.lifeTime = 0;
-        this.type = type;
-        log.info("New Player: id={}, position({}, {}), type={}\n", id, position.getX(), position.getY(), type);
+        this.bombPower = 1;
+        this.velocity = 0.05;
+        this.maxBombs = 1;
+        log.info("Create player with id = " + id);
     }
 
     @Override
-    public Point move(Direction direction, long time) {
-        if (time > 0) {
-            switch (direction) {
-                case UP:
-                    position = new Point(position.getX(), (int) (position.getY() + (time * velocity)));
-                    tick(1L);
-                    break;
-                case DOWN:
-                    position = new Point(position.getX(), (int) (position.getY() - (time * velocity)));
-                    tick(1L);
-                    break;
-                case RIGHT:
-                    position = new Point((int) (position.getX() + (time * velocity)), position.getY());
-                    tick(1L);
-                    break;
-                case LEFT:
-                    position = new Point((int) (position.getX() - (time * velocity)), position.getY());
-                    tick(1L);
-                    break;
-                case IDLE:
-                    tick(1L);
-                    break;
-                default:
-                    break;
-            }
-        } else
-            throw new IllegalArgumentException("can't support negative time");
+    public Point move(Direction direction) {
+        switch (direction) {
+            case UP:
+                position = new Point(position.getX(), (int) (position.getY() + velocity * playerSize));
+                log.info("move UP");
+                break;
+            case DOWN:
+                position = new Point(position.getX() , (int) (position.getY() - velocity * playerSize));
+                log.info("move DOWN");
+                break;
+
+            case RIGHT:
+                position = new Point((int) (position.getX() + velocity * playerSize), position.getY());
+                log.info("move RIGHT");
+                break;
+
+            case LEFT:
+                position = new Point((int) (position.getX() - velocity * playerSize) , position.getY());
+                log.info("move LEFT");
+
+                break;
+
+            case IDLE:
+                log.info("don't move, only IDLE");
+                break;
+
+            default:
+                break;
+        }
         return position;
     }
 
-    @Override
-    public Point getPosition() {
-        return position;
-    }
+
+
 
     @Override
     public int getId() {
@@ -78,12 +78,86 @@ public final class Player implements Movable {
     }
 
     @Override
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+
+    @Override
     public void tick(long elapsed) {
-        lifeTime += elapsed;
+        time = elapsed;
+
     }
 
-    public int getRangeExplosion() {
-        return rangeExplosion;
+    @Override
+    public boolean isAlive() {
+        return alive;
     }
 
+    public int getBombPower() {
+        return bombPower;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else if (obj instanceof Player) {
+            Player player = (Player) obj;
+            return this.id == player.id;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "\nPlayer: {" +
+                "\nid = " + id +
+                "\nposition = " + position +
+                "\nbombPower = " + bombPower +
+                "\nvelocity = " + velocity +
+                "\nmaxBombs = " + maxBombs +
+                "\n}";
+    }
+
+    public int getMaxBombs() {
+        return maxBombs;
+    }
+
+    public double getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setMaxBombs(int maxBombs) {
+        this.maxBombs = maxBombs;
+    }
+
+    public void setBombPower(int bombPower) {
+        this.bombPower = bombPower;
+    }
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+
+        if (this.id == o.hashCode())
+            return 0;
+        else if (this.id > o.hashCode())
+            return 1;
+        else
+            return -1;
+
+    }
 }

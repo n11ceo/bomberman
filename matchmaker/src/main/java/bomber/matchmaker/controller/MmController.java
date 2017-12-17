@@ -14,14 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+
 
 @Controller
 @RequestMapping("/matchmaker")
@@ -43,7 +40,12 @@ public class MmController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> join(@RequestParam("name") String name) throws IOException, InterruptedException {
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<String> join(@RequestBody String data) throws IOException {
+
+        String[] massivStringForInputName = data.split("=");
+        String name = massivStringForInputName[1]; // get player's name
+
         StartThread startThread = new StartThread(gameId, bomberService); //creates an object of StartTh
         if (gameId == null) {
             log.info("Requesting GS to create a game");
@@ -57,6 +59,7 @@ public class MmController {
             ConnectionQueue.getInstance().offer(new Connection(idGenerator.getAndIncrement(), name));
             if (ConnectionQueue.getInstance().size() == MAX_PLAYER_IN_GAME) {
                 startThread.start(); //starts our thread
+                log.info("gameId = {}", gameId);
                 startThread.suspend();
             }
         }
@@ -68,5 +71,9 @@ public class MmController {
     public static void clear() {
         gameId = null;
         ConnectionQueue.getInstance().clear();
+    }
+
+    public static Integer getGameId() {
+        return gameId;
     }
 }

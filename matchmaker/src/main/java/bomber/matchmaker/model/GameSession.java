@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
-import java.util.Queue;
 
 
 @Entity
@@ -26,6 +25,10 @@ public class GameSession {
     public GameSession(Integer gameId, Date date) {
         this.gameId = gameId;
         this.date = date;
+    }
+
+    public GameSession() {
+
     }
 
     public Integer getGameId() {
